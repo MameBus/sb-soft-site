@@ -1,5 +1,10 @@
+# Note if any resources change region will need to revisit because ACM must be us-east-1
 provider "aws" {
   region = "us-east-1"
+}
+
+provider "cloudflare" {
+  api_token = var.cloudflare_api_token
 }
 
 # ---------- s3 ----------
@@ -85,31 +90,6 @@ subject_alternative_names = ["sbox-soft.com"]
     create_before_destroy = true
   }
 }
-
-# https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/acm_certificate_validation
-
-resource "aws_route53_record" "cert" {
-  for_each = {
-    for dvo in aws_acm_certificate.cert.domain_validation_options : dvo.domain_name => {
-      name   = dvo.resource_record_name
-      record = dvo.resource_record_value
-      type   = dvo.resource_record_type
-    }
-  }
-
-  allow_overwrite = true
-  name            = each.value.name
-  records         = [each.value.record]
-  ttl             = 60
-  type            = each.value.type
-  zone_id         = data.aws_route53_zone.main.zone_id
-}
-
-resource "aws_acm_certificate_validation" "cert" {
-  certificate_arn         = aws_acm_certificate.cert.arn
-  validation_record_fqdns = [for record in aws_route53_record.cert : record.fqdn]
-}
-
 # The actual cloudfront distribution
 
 resource "aws_cloudfront_distribution" "cdn" {
@@ -166,35 +146,51 @@ resource "aws_cloudfront_distribution" "cdn" {
     }
 }
 
-# ---------- Route 53 ----------
 
-# Getting the route53 zone
-data "aws_route53_zone" "main" {
-  name         = "sbox-soft.com"
-  private_zone = false
+# ---------- cloudflare ----------
+
+data "cloudflare_zone" "main" {
+  name = "sbox-soft.com"
 }
 
-# Making the route53 DNS record
-resource "aws_route53_record" "site_dns_www" {
-  zone_id = data.aws_route53_zone.main.zone_id
-  name    = "www.sbox-soft.com"
-  type    = "A"
+// https://registry.terraform.io/providers/-/aws/latest/docs/resources/acm_certificate_validation
 
-  alias {
-    name                   = aws_cloudfront_distribution.cdn.domain_name
-    zone_id                = aws_cloudfront_distribution.cdn.hosted_zone_id
-    evaluate_target_health = false
+resource "cloudflare_record" "cert" {
+  for_each = {
+    for dvo in aws_acm_certificate.cert.domain_validation_options : dvo.domain_name => {
+      name   = dvo.resource_record_name
+      record = dvo.resource_record_value
+      type   = dvo.resource_record_type
+    }
   }
+  zone_id = data.cloudflare_zone.main.id
+  name    = each.value.name
+  value   = each.value.record
+  type    = each.value.type
+  ttl     = 60
+  allow_overwrite = true
 }
 
-resource "aws_route53_record" "site_dns_root" {
-  zone_id = data.aws_route53_zone.main.zone_id
-  name    = "sbox-soft.com"
-  type    = "A"
+resource "aws_acm_certificate_validation" "cert" {
+  certificate_arn         = aws_acm_certificate.cert.arn
+  validation_record_fqdns = [
+    for dvo in aws_acm_certificate.cert.domain_validation_options : dvo.resource_record_name
+  ]
+}
 
-  alias {
-    name                   = aws_cloudfront_distribution.cdn.domain_name
-    zone_id                = aws_cloudfront_distribution.cdn.hosted_zone_id
-    evaluate_target_health = false
-  }
+# Cloudflare DNS to send traffic over to cloudfront
+resource "cloudflare_record" "www" {
+  zone_id = data.cloudflare_zone.main.id
+  name = "www.sbox-soft.com"
+  type = "CNAME"
+  value = aws_cloudfront_distribution.cfn.domain_name
+  proxied = false
+}
+
+resource "cloudflare_record" "root" {
+  zone_id = data.cloudflare_zone.main.id
+  name = "sbox-soft.com"
+  type = "CNAME"
+  value = aws_cloudfront_distribution.cfn.domain_name
+  proxied = false
 }
