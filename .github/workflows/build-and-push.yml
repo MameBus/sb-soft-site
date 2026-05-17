@@ -41,7 +41,7 @@ jobs:
 
   build-and-push:
     needs: apply
-    runs-on: ubunu-latest
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Code
