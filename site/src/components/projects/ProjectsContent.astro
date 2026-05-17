@@ -1,0 +1,20 @@
+---
+import { getCollection } from "astro:content";
+import ProjectCard from "./ProjectCard.astro";
+
+const projects = await getCollection("projects");
+ 
+---
+
+<div>
+    <section>
+        <h2 class="text-center text-3xl font-semibold">SBox-Soft Projects</h2>
+
+        <div class="flex flex-wrap gap-10 justify-center my-10">
+            {projects.map((project) => (
+                <ProjectCard project={project} />
+            ))}
+        </div>
+        
+    </section>
+</div>

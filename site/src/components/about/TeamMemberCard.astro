@@ -1,0 +1,15 @@
+---
+import { Picture } from 'astro:assets';
+const { member } = Astro.props;
+---
+
+<div>
+    <div class="flex flex-col items-center rounded-4xl bg-gray-200 space-x-7 px-8 py-5 md:max-w-xl md:flex-row mx-auto">
+        <Picture class="object-cover rounded-full h-50 w-70" src={member.data.image} alt={`Image of ${member.data.name}`} formats={[]} width="200" height="200"/>
+        <div class="flex flex-col justify-between leading-normal">
+            <h4 class="mb-2 text-2xl font-bold tracking-tight text-heading">{member.data.name} - {member.data.role}</h4>
+            <a class="font-medium text-blue-500 text-fg-brand hover:underline" href={member.data.linkedin}>See on Linkedin</a>
+            <p class="mt-6">{member.body}</p>
+        </div>
+    </div>
+</div>
