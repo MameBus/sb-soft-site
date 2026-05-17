@@ -149,12 +149,15 @@ resource "aws_cloudfront_distribution" "cdn" {
 # ---------- cloudflare ----------
 
 data "cloudflare_zone" "main" {
+  account = {
+    id = "f635b78b1abe75f8de9bdacccd29184d"
+  }
   name = "sbox-soft.com"
 }
 
 // https://registry.terraform.io/providers/-/aws/latest/docs/resources/acm_certificate_validation
 
-resource "cloudflare_record" "cert" {
+resource "cloudflare_dns_record" "cert" {
   for_each = {
     for dvo in aws_acm_certificate.cert.domain_validation_options : dvo.domain_name => {
       name   = dvo.resource_record_name
@@ -164,10 +167,9 @@ resource "cloudflare_record" "cert" {
   }
   zone_id = data.cloudflare_zone.main.id
   name    = each.value.name
-  value   = each.value.record
-  type    = each.value.type
   ttl     = 60
-  allow_overwrite = true
+  content   = each.value.record
+  type    = each.value.type
 }
 
 resource "aws_acm_certificate_validation" "cert" {
@@ -178,18 +180,20 @@ resource "aws_acm_certificate_validation" "cert" {
 }
 
 # Cloudflare DNS to send traffic over to cloudfront
-resource "cloudflare_record" "www" {
+resource "cloudflare_dns_record" "www" {
   zone_id = data.cloudflare_zone.main.id
   name = "www.sbox-soft.com"
+  ttl = 3600
   type = "CNAME"
-  value = aws_cloudfront_distribution.cfn.domain_name
+  content = aws_cloudfront_distribution.cfn.domain_name
   proxied = false
 }
 
-resource "cloudflare_record" "root" {
+resource "cloudflare_dns_record" "root" {
   zone_id = data.cloudflare_zone.main.id
   name = "sbox-soft.com"
+  ttl = 3600
   type = "CNAME"
-  value = aws_cloudfront_distribution.cfn.domain_name
+  content = aws_cloudfront_distribution.cfn.domain_name
   proxied = false
 }
