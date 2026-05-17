@@ -164,7 +164,7 @@ resource "cloudflare_dns_record" "cert" {
       type   = dvo.resource_record_type
     }
   }
-  zone_id = data.cloudflare_zone.main.result.id
+  zone_id = data.cloudflare_zone.main.zone_id
   name    = each.value.name
   ttl     = 60
   content   = each.value.record
@@ -180,7 +180,7 @@ resource "aws_acm_certificate_validation" "cert" {
 
 # Cloudflare DNS to send traffic over to cloudfront
 resource "cloudflare_dns_record" "www" {
-  zone_id = data.cloudflare_zone.main.result.id
+  zone_id = data.cloudflare_zone.main.zone_id
   name = "www.sbox-soft.com"
   ttl = 3600
   type = "CNAME"
@@ -189,7 +189,7 @@ resource "cloudflare_dns_record" "www" {
 }
 
 resource "cloudflare_dns_record" "root" {
-  zone_id = data.cloudflare_zone.main.result.id
+  zone_id = data.cloudflare_zone.main.zone_id
   name = "sbox-soft.com"
   ttl = 3600
   type = "CNAME"
