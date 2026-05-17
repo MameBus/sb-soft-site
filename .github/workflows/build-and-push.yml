@@ -1,4 +1,4 @@
-name: Terraform Apply
+name: Build and Push
 
 on:
   push:
@@ -38,3 +38,30 @@ jobs:
       - name: Terraform Apply
         run: terraform apply -auto-approve
         working-directory: ./terraform
+
+  build-and-push:
+    needs: apply
+    runs-on: ubunu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.x
+
+      - name: Build it
+        run: npm run build
+        working-directory: ./site
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::786401692952:role/GitHubActionsTerraform
+          aws-region: us-east-1
+
+      - name: Upload site content to s3
+        run: aws s3 sync ./dist s3://sbox-soft-site-s3 --recursive
+        working-directory: ./site
