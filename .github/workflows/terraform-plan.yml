@@ -11,7 +11,7 @@ permissions:
   pull-requests: write  # Comment on PRs
 
 env:
-  TF_VAR_cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_KEY }}
+  CLOUDFLARE_API_KEY: ${{ secrets.CLOUDFLARE_API_KEY }}
 
 jobs:
   plan:
