@@ -1,0 +1,17 @@
+---
+const { log } = Astro.props;
+---
+<div class="w-150 bg-gray-200 hover:bg-blue-200 mx-auto rounded-base py-2 pl-5 my-10">
+    <a href={`logs/${log.id}`}>
+        <section>
+            <h3 class="text-2xl">{log.data.title}</h3>
+            <p class="italic">{"by: " + log.data.author}</p>
+            <div class="flex gap-5 text-sm text-gray-500">
+                <p>{"Published: " + log.data.written.toLocaleDateString()}</p>
+                <p>{"Last Updated: " + log.data.updated.toLocaleDateString()}</p>
+            </div>
+
+            <p class="mt-5 w-11/12">{log.data.description}</p>
+        </section>
+    </a>
+</div>

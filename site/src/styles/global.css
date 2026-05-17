@@ -1,0 +1,15 @@
+@import "tailwindcss";
+@plugin '@tailwindcss/typography';
+@import "flowbite/src/themes/default";
+@source "../../node_modules/flowbite";
+
+@layer base {
+    html {
+        @apply font-sans
+    }
+}
+
+@theme {
+    --font-sans: "Roboto", ui-sans-serif, system-ui;
+    --color-custom-blue: #00354d;
+}

@@ -1,0 +1,52 @@
+<div>
+    <h2 class="text-center text-3xl font-semibold">Manage Notifications</h2>
+
+    <p class="mt-5">Subscribe to our newsletter to get notified whenever we publish a new devlog! You can always unsubscribe at any time from <a class="text-blue-500 underline" href="/unsubscribe">here</a>.</p>
+
+    <form class="bg-gray-100 rounded-base p-5 w-100 mx-auto mt-10" action="www.sbox-soft.com/api/subscribe" id="subscribe-form">
+        <label for="email">Email:</label><br>
+        <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight bg-white focus:outline-none focus:shadow-outline" id="email" name="email" type="email">
+        
+        <br>
+        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mt-10" type="submit">Subscribe</button>
+        
+        <br><p id="confirmation" class="text-green-500 mt-10 invisible">Sent. Check your Email for a verification before you can begin receiving Emails.</p>
+    </form>
+
+    <script>
+        // https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Forms/Sending_forms_through_JavaScript
+        const form = document.querySelector("#subscribe-form");
+    
+        async function sendData() {
+            // Associate the FormData object with the form element
+            if (!(form instanceof HTMLFormElement)) {
+                console.log("Could not find the form");
+                return;
+            }
+
+            const formData = new FormData(form);
+
+            try {
+                const response = await fetch("https://www.api.sb-soft.com/subscribe", {
+                    method: "POST",
+                    // Set the FormData instance as the request body
+                    body: formData,
+                });
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        async function showMessage() {
+            const message = document.querySelector("#confirmation");
+            message?.classList.remove("invisible");
+        }
+
+        // Override form submission
+        form?.addEventListener("submit", (event) => {
+            event.preventDefault(); // Stop page reload
+            sendData();
+            showMessage();
+        });
+    </script>
+</div>
