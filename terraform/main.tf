@@ -184,7 +184,7 @@ resource "cloudflare_dns_record" "www" {
   name = "www.sbox-soft.com"
   ttl = 3600
   type = "CNAME"
-  content = aws_cloudfront_distribution.cfn.domain_name
+  content = aws_cloudfront_distribution.cdn.domain_name
   proxied = false
 }
 
@@ -193,6 +193,6 @@ resource "cloudflare_dns_record" "root" {
   name = "sbox-soft.com"
   ttl = 3600
   type = "CNAME"
-  content = aws_cloudfront_distribution.cfn.domain_name
+  content = aws_cloudfront_distribution.cdn.domain_name
   proxied = false
 }
