@@ -149,9 +149,7 @@ resource "aws_cloudfront_distribution" "cdn" {
 # ---------- cloudflare ----------
 
 data "cloudflare_zone" "main" {
-  filter = {
-    name = "sbox-soft.com"
-  }
+  zone_id = d531a4ca95a31dacbe6fb4132f127a0e
 }
 
 // https://registry.terraform.io/providers/-/aws/latest/docs/resources/acm_certificate_validation
