@@ -52,6 +52,10 @@ jobs:
         with:
           node-version: 24.x
 
+      - name: Install Dependencies
+        run: npm install
+        working-directory: ./site
+
       - name: Build it
         run: npm run build
         working-directory: ./site
