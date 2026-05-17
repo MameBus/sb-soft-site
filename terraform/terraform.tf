@@ -10,5 +10,13 @@ terraform {
     }
   }
 
+  backend "s3" {
+    bucket = "sbox-soft-terraform-state"
+    key    = "sbox-site/terraform.tfstate"
+    region = "us-east-1"
+
+    use_lockfile = true
+  }
+
   required_version = ">= 1.2"
 }
