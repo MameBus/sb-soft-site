@@ -67,5 +67,5 @@ jobs:
           aws-region: us-east-1
 
       - name: Upload site content to s3
-        run: aws s3 sync ./dist s3://sbox-soft-site-s3 --recursive
+        run: aws s3 sync ./dist s3://sbox-soft-site-s3 --delete
         working-directory: ./site
