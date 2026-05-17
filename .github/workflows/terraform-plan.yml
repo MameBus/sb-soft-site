@@ -56,7 +56,7 @@ jobs:
               ? plan.substring(0, 60000) + '\n\n... (truncated)'
               : plan;
 
-            ```
+            ````
             ${truncated}
             ```
             *Plan exit code: ${{ steps.plan.outcome }}*`;
