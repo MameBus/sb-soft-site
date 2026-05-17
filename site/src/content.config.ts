@@ -30,6 +30,7 @@ const logs = defineCollection({
     loader: glob({ base: './src/content/logs', pattern: '**/*.{md,mdx}' }),
     schema: z.object({
         title: z.string(),
+        description: z.string(),
         written: z.date(),
         updated: z.date(),
         author: z.string()

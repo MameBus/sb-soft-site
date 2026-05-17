@@ -1,13 +1,13 @@
 ---
-import { getCollection, render } from 'astro:content'
-import Simple from '../../layouts/Simple.astro';
+import { getCollection, render } from "astro:content";
+import Simple from "../../layouts/Simple.astro";
 
 export async function getStaticPaths() {
-  const posts = await getCollection('logs');
-  return posts.map(post => ({
-    params: { id: post.id },
-    props: { post },
-  }));
+    const posts = await getCollection("logs");
+    return posts.map((post) => ({
+        params: { id: post.id },
+        props: { post },
+    }));
 }
 
 const { post } = Astro.props;
@@ -15,7 +15,8 @@ const { Content } = await render(post);
 ---
 
 <Simple>
-    <article>
+    <article class="prose prose-h1:font-bold prose-h1:text-xl prose-a:text-blue-600 prose-p:text-justify prose-img:rounded-xl prose-headings:underline mx-auto">
         <Content />
     </article>
 </Simple>
+
