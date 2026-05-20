@@ -110,6 +110,14 @@ resource "aws_apigatewayv2_api" "api" {
       "https://www.sbox-soft.com",
       "https://sbox-soft.com"
     ]
+    allowed_methods = [
+      "POST",
+      "OPTIONS"
+    ]
+    allowed_headers = [
+      "content-type"
+    ]
+    max_age = 300
   }
 }
 
@@ -192,7 +200,7 @@ resource "aws_apigatewayv2_integration" "unsub_confirm" {
 resource "aws_apigatewayv2_route" "sub" {
   api_id = aws_apigatewayv2_api.api.id
 
-  route_key = "GET /subscribe"
+  route_key = "POST /subscribe"
 
   target = "integrations/${aws_apigatewayv2_integration.sub.id}"
 }
@@ -208,7 +216,7 @@ resource "aws_apigatewayv2_route" "sub_confirm" {
 resource "aws_apigatewayv2_route" "unsub" {
   api_id = aws_apigatewayv2_api.api.id
 
-  route_key = "GET /unsubscribe"
+  route_key = "POST /unsubscribe"
 
   target = "integrations/${aws_apigatewayv2_integration.unsub.id}"
 }
