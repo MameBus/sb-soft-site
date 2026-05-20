@@ -114,10 +114,8 @@ resource "aws_apigatewayv2_api" "api" {
       "POST",
       "OPTIONS"
     ]
-    allow_headers = [
-      "content-type"
-    ]
-    max_age = 300
+    allow_headers = ["*"]
+    max_age       = 300
   }
 }
 
