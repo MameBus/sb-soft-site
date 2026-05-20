@@ -16,9 +16,9 @@ resource "aws_dynamodb_table" "subscribers_table" {
   }
 
   global_secondary_index {
-    name            = "VerifiedStatusIndex"
-    hash_key        = "verifiedStatus"
-    projection_type = "INCLUDE"
+    name               = "VerifiedStatusIndex"
+    hash_key           = "verifiedStatus"
+    projection_type    = "INCLUDE"
     non_key_attributes = ["emailAddress"]
   }
 }

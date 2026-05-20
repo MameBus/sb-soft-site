@@ -104,6 +104,13 @@ resource "aws_lambda_function" "unsub_confirm_function" {
 resource "aws_apigatewayv2_api" "api" {
   name          = "newsletter-api"
   protocol_type = "HTTP"
+  cors_configuration {
+    # TODO this probably shouldn't be hardcoded
+    allow_origins = [
+      "https://www.sbox-soft.com",
+      "https://sbox-soft.com"
+    ]
+  }
 }
 
 
@@ -274,12 +281,9 @@ resource "aws_apigatewayv2_api_mapping" "api_mapping" {
 # DNS record to point api to cloudflare
 resource "cloudflare_dns_record" "api" {
   zone_id = data.cloudflare_zone.main.zone_id
-
-  name = "api"
-  type = "CNAME"
-
+  name    = "api"
+  type    = "CNAME"
   content = aws_apigatewayv2_domain_name.api_domain.domain_name_configuration[0].target_domain_name
-
   ttl     = 3600
   proxied = false
 }

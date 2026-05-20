@@ -47,11 +47,11 @@ resource "cloudflare_dns_record" "dkim" {
 
 # MX record, this says what do with mail going to this domain
 resource "cloudflare_dns_record" "mx" {
-  zone_id = data.cloudflare_zone.main.zone_id
-  ttl     = 3600 # 1 hour
-  type    = "MX"
-  name    = "mail"
-  content = "feedback-smtp.us-east-1.amazonses.com"
+  zone_id  = data.cloudflare_zone.main.zone_id
+  ttl      = 3600 # 1 hour
+  type     = "MX"
+  name     = "mail"
+  content  = "feedback-smtp.us-east-1.amazonses.com"
   priority = 1
 }
 
