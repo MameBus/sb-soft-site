@@ -29,9 +29,7 @@ data "aws_iam_policy_document" "lambda_permissions" {
         sid = "email",
         effect = "Allow",
         actions = [
-            # TODO revist and make sure these are the right actions for minimal permissions
-            "ses:SendEmail",
-            "ses:SendRawEmail",
+            "ses:SendTemplatedEmail",
             "ses:SendBulkTemplatedEmail"
         ],
         resources = ["*"]

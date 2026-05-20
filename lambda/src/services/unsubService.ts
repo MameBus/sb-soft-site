@@ -1,5 +1,8 @@
+import { makeUnsubscribeVerifyTemplateData, unsubscribeVerifyTemplateName } from "../email-templates/unsub.js";
+import { makeUnsubscribeConfirmationTemplateData } from "../email-templates/unsubConfirmation.js";
 import { Subscriber, verifiedStatusValues } from "../models/subscriber.js";
 import { deleteSubscriber, getSubscriber, updateSubscriber } from "../repository/subscribersRepository.js";
+import { sendTemplateEmail } from "./emailService.js";
 import { generateRandomToken, generateTokenExpiry, hashToken, validateToken } from "./tokenService.js";
 
 const tokenTtl = 60 * 60 * 24; // 1 day
@@ -53,9 +56,9 @@ export async function confirmUnsub(emailAddress : string, token : string) : Prom
 }
 
 async function sendUnsubscribeValidateEmail(emailAddress : string, token : string) {
-    
+    sendTemplateEmail(emailAddress, makeUnsubscribeVerifyTemplateData(emailAddress, token), unsubscribeVerifyTemplateName);
 }
 
 async function sendUnsubscribeConfirmationEmail(emailAddress : string) {
-    
+    sendTemplateEmail(emailAddress, makeUnsubscribeConfirmationTemplateData(emailAddress), unsubscribeVerifyTemplateName);
 }

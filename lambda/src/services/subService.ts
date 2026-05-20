@@ -1,5 +1,8 @@
+import { makeSubscribeVerifyTemplateData, subscribeVerifyTemplateName } from "../email-templates/sub.js";
+import { subscribeConfirmationTemplateName } from "../email-templates/subConfirmation.js";
 import { Subscriber, verifiedStatusValues } from "../models/subscriber.js";
 import { getSubscriber, putSubscriber, updateSubscriber } from "../repository/subscribersRepository.js";
+import { sendTemplateEmail } from "./emailService.js";
 import { generateRandomToken, generateTokenExpiry, hashToken, validateToken } from "./tokenService.js";
 
 const tokenTtl = 60 * 60 * 24; // 1 day
@@ -75,9 +78,10 @@ export async function confirmSub(emailAddress : string, token : string) {
 }
 
 async function sendSubscribeValidateEmail(emailAddress : string, token : string) {
-    
+    sendTemplateEmail(emailAddress, makeSubscribeVerifyTemplateData(emailAddress, token), subscribeVerifyTemplateName);
 }
 
 async function sendSubscribeConfirmationEmail(emailAddress : string, token : string) {
+    sendTemplateEmail(emailAddress, makeSubscribeVerifyTemplateData(emailAddress, token), subscribeConfirmationTemplateName);
     
 }
