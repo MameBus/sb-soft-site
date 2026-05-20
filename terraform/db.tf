@@ -19,5 +19,6 @@ resource "aws_dynamodb_table" "subscribers_table" {
     name            = "VerifiedStatusIndex"
     hash_key        = "verifiedStatus"
     projection_type = "INCLUDE"
+    non_key_attributes = ["emailAddress"]
   }
 }
