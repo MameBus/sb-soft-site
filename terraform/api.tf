@@ -50,6 +50,12 @@ resource "aws_iam_role" "newsletter_lambda_execution_role" {
   assume_role_policy = data.aws_iam_policy_document.assume_role.json
 }
 
+# Attach cloudwatch permissions to the role
+resource "aws_iam_role_policy_attachment" "cloudwatch_policy" {
+  role       = aws_iam_role.newsletter_lambda_execution_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+}
+
 # Attach the lambda permissions to the role
 resource "aws_iam_role_policy" "newsletter_policy" {
   name   = "newsletter_policy"
