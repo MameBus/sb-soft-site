@@ -1,0 +1,5 @@
+Please confirm your subscription.
+        
+If this wasn't you, then you can disregard this Email.
+
+Hit this link to confirm your subscription to SBox-Soft's newsletter: www.api.sbox-soft.com/sub-verify?email={{email}}&token={{token}}
