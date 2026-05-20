@@ -1,6 +1,6 @@
-import { Subscriber } from "../models/subscriber";
-import { deleteSubscriber, getSubscriber, updateSubscriber } from "../repository/subscribersRepository";
-import { generateRandomToken, generateTokenExpiry, hashToken, validateToken } from "./tokenService";
+import { Subscriber, verifiedStatusValues } from "../models/subscriber.js";
+import { deleteSubscriber, getSubscriber, updateSubscriber } from "../repository/subscribersRepository.js";
+import { generateRandomToken, generateTokenExpiry, hashToken, validateToken } from "./tokenService.js";
 
 const tokenTtl = 60 * 60 * 24; // 1 day
 
@@ -10,7 +10,7 @@ export async function unsub(emailAddress : string) : Promise<void> {
     const existingSubscriber = await getSubscriber(emailAddress);
 
     // If there is no record or they aren't verified anyway just do nothing
-    if (existingSubscriber == null || !existingSubscriber.verified) {
+    if (existingSubscriber == null || existingSubscriber.verifiedStatus == verifiedStatusValues.awaiting) {
         return;
     }
 
@@ -22,7 +22,7 @@ export async function unsub(emailAddress : string) : Promise<void> {
     // Create the new subscriber object
     const updatedSubscriber : Subscriber = {
         emailAddress: emailAddress,
-        verified: true,
+        verifiedStatus: verifiedStatusValues.verified,
         token: hash,
         tokenExpire: expiry
     }
@@ -40,7 +40,7 @@ export async function confirmUnsub(emailAddress : string, token : string) : Prom
     var subscriber = await getSubscriber(emailAddress);
 
     // If we didn't find the subscriber or they aren't verified anyway, then we don't do anything
-    if (subscriber == null || !subscriber.verified) {
+    if (subscriber == null || subscriber.verifiedStatus == verifiedStatusValues.awaiting) {
         return;
     }
 

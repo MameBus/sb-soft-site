@@ -2,16 +2,16 @@
   "compilerOptions": {
     "target": "es2020",
     "strict": true,
-    "preserveConstEnums": true,
-    "noEmit": true,
     "sourceMap": false,
-    "module":"esnext",
-    "moduleResolution":"bundler",
+    "module":"nodenext",
+    "moduleResolution":"nodenext",
     "esModuleInterop": true, 
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true, 
     "isolatedModules": true, 
     "types": [ "node" ],
+    "rootDir": "./src", 
+    "outDir": "./dist"
   },
   "exclude": ["node_modules", "**/*.test.ts"]
 }

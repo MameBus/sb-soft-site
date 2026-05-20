@@ -1,4 +1,4 @@
-import { unsub } from "../services/unsubService";
+import { unsub } from "../services/unsubService.js";
 
 type UnsubEvent = {
     emailAddress : string

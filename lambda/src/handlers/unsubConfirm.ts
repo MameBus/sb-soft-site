@@ -1,5 +1,5 @@
-import { sub } from "../services/subService";
-import { confirmUnsub } from "../services/unsubService";
+import { sub } from "../services/subService.js";
+import { confirmUnsub } from "../services/unsubService.js";
 
 type UnsubConfirmEvent = {
     emailAddress : string,

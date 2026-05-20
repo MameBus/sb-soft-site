@@ -1,4 +1,4 @@
-import { sub } from "../services/subService";
+import { sub } from "../services/subService.js";
 
 type SubEvent = {
     emailAddress : string

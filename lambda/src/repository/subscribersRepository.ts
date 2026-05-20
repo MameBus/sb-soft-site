@@ -8,14 +8,14 @@ import {
     PutCommand,
     DynamoDBDocumentClient
 } from "@aws-sdk/lib-dynamodb";
-import { Subscriber } from "../models/subscriber";
+import { Subscriber } from "../models/subscriber.js";
 
 // Client that talks to dynamodb
 const client = new DynamoDBClient();
 const docClient = DynamoDBDocumentClient.from(client);
 
 // Table properties
-const tableName = "newsletter_subscribers";
+const tableName = "site-newsletter-subscribers";
 
 // Add a new subscriber
 export async function putSubscriber(subscriber : Subscriber) {
@@ -33,9 +33,9 @@ export async function updateSubscriber(subscriber : Subscriber) {
         Key: {
             emailAddress: subscriber.emailAddress
         },
-        UpdateExpression: "set verified = :_verified, token = :_token, tokenExpire = :_tokenExpire",
+        UpdateExpression: "set verifiedStatus = :_verifiedStatus, token = :_token, tokenExpire = :_tokenExpire",
         ExpressionAttributeValues: {
-            ":_verified": subscriber.verified,
+            ":_verifiedStatus": subscriber.verifiedStatus,
             ":_token": subscriber.token,
             ":_tokenExpire": subscriber.tokenExpire
         }

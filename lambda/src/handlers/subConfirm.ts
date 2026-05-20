@@ -1,4 +1,4 @@
-import { confirmSub, sub } from "../services/subService";
+import { confirmSub, sub } from "../services/subService.js";
 
 type SubConfirmEvent = {
     emailAddress : string,

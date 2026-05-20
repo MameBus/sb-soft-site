@@ -1,6 +1,6 @@
-import { Subscriber } from "../models/subscriber";
-import { getSubscriber, putSubscriber, updateSubscriber } from "../repository/subscribersRepository";
-import { generateRandomToken, generateTokenExpiry, hashToken, validateToken } from "./tokenService";
+import { Subscriber, verifiedStatusValues } from "../models/subscriber.js";
+import { getSubscriber, putSubscriber, updateSubscriber } from "../repository/subscribersRepository.js";
+import { generateRandomToken, generateTokenExpiry, hashToken, validateToken } from "./tokenService.js";
 
 const tokenTtl = 60 * 60 * 24; // 1 day
 
@@ -10,7 +10,7 @@ export async function sub(emailAddress : string) {
     const existingSubscriber = await getSubscriber(emailAddress);
     
     // If the subscriber exists and is already verified then we do nothing
-    if (existingSubscriber?.verified) {
+    if (existingSubscriber?.verifiedStatus == verifiedStatusValues.verified) {
         return;
     }
 
@@ -22,7 +22,7 @@ export async function sub(emailAddress : string) {
     // Create the new subscriber object
     const newSubscriber : Subscriber = {
         emailAddress: emailAddress,
-        verified: false,
+        verifiedStatus: verifiedStatusValues.awaiting,
         token: hash,
         tokenExpire: expiry
     }
@@ -50,24 +50,34 @@ export async function confirmSub(emailAddress : string, token : string) {
         return;
     }
     // If we did find the subscriber, and they are already verified, we do nothing
-    else if (subscriber.verified) {
+    else if (subscriber.verifiedStatus == verifiedStatusValues.verified) {
         return;
     }
 
     // Otherwise we just compare the token we got with the hashed token in the record and check the expiry
     if (validateToken(token, subscriber.token) && subscriber.tokenExpire > new Date()) { // Valid
-        subscriber.verified = true;
-        subscriber.token = ''; // Reset the token to be blank so that the token can't be used for ubsubbing
+        subscriber.verifiedStatus = verifiedStatusValues.verified;
+        
+        // Generate a new token which will be used as the unsubscribe token that is sent along with the unsubscribe email
+        const token = generateRandomToken();
+        const hash = hashToken(token);
+        const expiry = generateTokenExpiry(tokenTtl);
+
+        subscriber.token = hash;
+        subscriber.tokenExpire = expiry;
+
+        // Db side of things
         updateSubscriber(subscriber);
+
+        // Email confirmation side of things
+        sendSubscribeConfirmationEmail(emailAddress, token);
     }
-    
-    sendSubscribeConfirmationEmail(emailAddress);
 }
 
 async function sendSubscribeValidateEmail(emailAddress : string, token : string) {
     
 }
 
-async function sendSubscribeConfirmationEmail(emailAddress : string) {
+async function sendSubscribeConfirmationEmail(emailAddress : string, token : string) {
     
 }
