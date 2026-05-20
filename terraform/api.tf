@@ -14,95 +14,90 @@ data "aws_iam_policy_document" "assume_role" {
 
 # IAM role for Lambda execution
 data "aws_iam_policy_document" "lambda_permissions" {
-    statement {
-        sid = "db",
-        effect = "Allow",
-        actions = [
-            "dynamodb:DeleteItem",
-            "dynamodb:PutItem",
-            "dynamodb:UpdateItem"
-        ],
-        resources: [aws_dynamodb_table.subscribers_table.arn]
-    }
-    
-    statement {
-        sid = "email",
-        effect = "Allow",
-        actions = [
-            "ses:SendTemplatedEmail",
-            "ses:SendBulkTemplatedEmail"
-        ],
-        resources = ["*"]
+  statement {
+    sid    = "db"
+    effect = "Allow"
+    actions = [
+      "dynamodb:DeleteItem",
+      "dynamodb:PutItem",
+      "dynamodb:UpdateItem"
+    ]
+    resources = [aws_dynamodb_table.subscribers_table.arn]
+  }
 
-        condition {
-            test     = "StringLike"
-            variable = "ses:FromAddress"
+  statement {
+    sid    = "email"
+    effect = "Allow"
+    actions = [
+      "ses:SendTemplatedEmail",
+      "ses:SendBulkTemplatedEmail"
+    ]
+    resources = ["*"]
 
-            values = [
-                "*@sb-soft.com"
-            ]
-        }
+    condition {
+      test     = "StringLike"
+      variable = "ses:FromAddress"
+
+      values = [
+        "*@sb-soft.com"
+      ]
     }
+  }
 }
 
 resource "aws_iam_role" "newsletter_lambda_execution_role" {
-    name               = "newsletter_lambda_execution_role"
-    assume_role_policy = data.aws_iam_policy_document.assume_role.json
+  name               = "newsletter_lambda_execution_role"
+  assume_role_policy = data.aws_iam_policy_document.assume_role.json
 }
 
 # Attach the lambda permissions to the role
 resource "aws_iam_role_policy" "newsletter_policy" {
-    name = "newsletter_policy"
-    role = aws_iam_role.newsletter_lambda_execution_role.id
-    policy = data.aws_iam_policy_document.lambda_permissions.json
+  name   = "newsletter_policy"
+  role   = aws_iam_role.newsletter_lambda_execution_role.id
+  policy = data.aws_iam_policy_document.lambda_permissions.json
 }
 
 # Package the Lambda function code
 data "archive_file" "newsletter_code" {
   type        = "zip"
-  source_dir = "${path.module}/../lambda/dist"
+  source_dir  = "${path.module}/../lambda/dist"
   output_path = "${path.module}/../lambda/function.zip"
 }
 
 # Lambda functions
 resource "aws_lambda_function" "sub_function" {
-    filename      = data.archive_file.newsletter_code.output_path
-    function_name = "sb_site_newsletter_sub"
-    role          = aws_iam_role.newsletter_lambda_execution_role.arn
-    handler       = "handlers/sub.handler"
-    code_sha256   = data.archive_file.newsletter_code.output_base64sha256
-
-    runtime = "nodejs24.x"
+  filename      = data.archive_file.newsletter_code.output_path
+  function_name = "sb_site_newsletter_sub"
+  role          = aws_iam_role.newsletter_lambda_execution_role.arn
+  handler       = "handlers/sub.handler"
+  runtime       = "nodejs22.x"
 }
 
 resource "aws_lambda_function" "sub_confirm_function" {
-    filename      = data.archive_file.newsletter_code.output_path
-    function_name = "sb_site_newsletter_sub_confirm"
-    role          = aws_iam_role.newsletter_lambda_execution_role.arn
-    handler       = "handlers/subConfirm.handler"
-    code_sha256   = data.archive_file.newsletter_code.output_base64sha256
+  filename      = data.archive_file.newsletter_code.output_path
+  function_name = "sb_site_newsletter_sub_confirm"
+  role          = aws_iam_role.newsletter_lambda_execution_role.arn
+  handler       = "handlers/subConfirm.handler"
 
-    runtime = "nodejs24.x"
+  runtime = "nodejs22.x"
 }
 
 resource "aws_lambda_function" "unsub_function" {
-    filename      = data.archive_file.newsletter_code.output_path
-    function_name = "sb_site_newsletter_unsub"
-    role          = aws_iam_role.newsletter_lambda_execution_role.arn
-    handler       = "handlers/unsub.handler"
-    code_sha256   = data.archive_file.newsletter_code.output_base64sha256
+  filename      = data.archive_file.newsletter_code.output_path
+  function_name = "sb_site_newsletter_unsub"
+  role          = aws_iam_role.newsletter_lambda_execution_role.arn
+  handler       = "handlers/unsub.handler"
 
-    runtime = "nodejs24.x"
+  runtime = "nodejs22.x"
 }
 
 resource "aws_lambda_function" "unsub_confirm_function" {
-    filename      = data.archive_file.newsletter_code.output_path
-    function_name = "sb_site_newsletter_unsub_confirm"
-    role          = aws_iam_role.newsletter_lambda_execution_role.arn
-    handler       = "handlers/unsubConfirm.handler"
-    code_sha256   = data.archive_file.newsletter_code.output_base64sha256
+  filename      = data.archive_file.newsletter_code.output_path
+  function_name = "sb_site_newsletter_unsub_confirm"
+  role          = aws_iam_role.newsletter_lambda_execution_role.arn
+  handler       = "handlers/unsubConfirm.handler"
 
-    runtime = "nodejs24.x"
+  runtime = "nodejs22.x"
 }
 
 # -- API Gateway --
@@ -153,36 +148,36 @@ resource "aws_lambda_permission" "unsub_confirm_allow_api_gateway" {
 resource "aws_apigatewayv2_integration" "sub" {
   api_id = aws_apigatewayv2_api.api.id
 
-  integration_type   = "AWS_PROXY"
-  integration_uri    = aws_lambda_function.sub_function.invoke_arn
-  integration_method  = "POST"
+  integration_type       = "AWS_PROXY"
+  integration_uri        = aws_lambda_function.sub_function.invoke_arn
+  integration_method     = "POST"
   payload_format_version = "2.0"
 }
 
 resource "aws_apigatewayv2_integration" "sub_confirm" {
   api_id = aws_apigatewayv2_api.api.id
 
-  integration_type   = "AWS_PROXY"
-  integration_uri    = aws_lambda_function.sub_confirm_function.invoke_arn
-  integration_method  = "POST"
+  integration_type       = "AWS_PROXY"
+  integration_uri        = aws_lambda_function.sub_confirm_function.invoke_arn
+  integration_method     = "POST"
   payload_format_version = "2.0"
 }
 
 resource "aws_apigatewayv2_integration" "unsub" {
   api_id = aws_apigatewayv2_api.api.id
 
-  integration_type   = "AWS_PROXY"
-  integration_uri    = aws_lambda_function.unsub_function.invoke_arn
-  integration_method  = "POST"
+  integration_type       = "AWS_PROXY"
+  integration_uri        = aws_lambda_function.unsub_function.invoke_arn
+  integration_method     = "POST"
   payload_format_version = "2.0"
 }
 
 resource "aws_apigatewayv2_integration" "unsub_confirm" {
   api_id = aws_apigatewayv2_api.api.id
 
-  integration_type   = "AWS_PROXY"
-  integration_uri    = aws_lambda_function.unsub_confirm_function.invoke_arn
-  integration_method  = "POST"
+  integration_type       = "AWS_PROXY"
+  integration_uri        = aws_lambda_function.unsub_confirm_function.invoke_arn
+  integration_method     = "POST"
   payload_format_version = "2.0"
 }
 
@@ -248,43 +243,43 @@ resource "cloudflare_dns_record" "api_cert" {
   zone_id = data.cloudflare_zone.main.zone_id
   name    = each.value.name
   ttl     = 60
-  content   = each.value.record
+  content = each.value.record
   type    = each.value.type
 }
 
 resource "aws_acm_certificate_validation" "api_cert" {
-  certificate_arn         = aws_acm_certificate.api_cert.arn
+  certificate_arn = aws_acm_certificate.api_cert.arn
   validation_record_fqdns = [
     for dvo in aws_acm_certificate.api_cert.domain_validation_options : dvo.resource_record_name
   ]
 }
 
 resource "aws_apigatewayv2_domain_name" "api_domain" {
-    domain_name = "api.sbox-soft.com"
+  domain_name = "api.sbox-soft.com"
 
-    domain_name_configuration {
-        certificate_arn = aws_acm_certificate.api_cert.arn
-        endpoint_type   = "REGIONAL"
-        security_policy = "TLS_1_2"
-    }
+  domain_name_configuration {
+    certificate_arn = aws_acm_certificate.api_cert.arn
+    endpoint_type   = "REGIONAL"
+    security_policy = "TLS_1_2"
+  }
 }
 
 # Mapping of api/domainname/stage
 resource "aws_apigatewayv2_api_mapping" "api_mapping" {
-    api_id      = aws_apigatewayv2_api.api.id
+  api_id      = aws_apigatewayv2_api.api.id
   domain_name = aws_apigatewayv2_domain_name.api_domain.id
   stage       = aws_apigatewayv2_stage.prod.id
 }
 
 # DNS record to point api to cloudflare
 resource "cloudflare_dns_record" "api" {
-    zone_id = data.cloudflare_zone.main.zone_id
+  zone_id = data.cloudflare_zone.main.zone_id
 
-    name    = "api"
-    type    = "CNAME"
+  name = "api"
+  type = "CNAME"
 
-    content = aws_apigatewayv2_domain_name.api_domain.domain_name_configuration[0].target_domain_name
+  content = aws_apigatewayv2_domain_name.api_domain.domain_name_configuration[0].target_domain_name
 
-    ttl     = 3600
-    proxied = false
+  ttl     = 3600
+  proxied = false
 }

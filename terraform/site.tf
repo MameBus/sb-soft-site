@@ -40,20 +40,20 @@ resource "aws_s3_bucket_policy" "allow_cloudfront" {
   policy = jsonencode({
     "Version" : "2012-10-17",
     "Statement" : [
-        {
+      {
         "Sid" : "AllowCloudFrontServicePrincipalReadOnly",
         "Effect" : "Allow",
         "Principal" : {
-            "Service" : "cloudfront.amazonaws.com"
+          "Service" : "cloudfront.amazonaws.com"
         },
         "Action" : "s3:GetObject",
         "Resource" : "${aws_s3_bucket.sbox_soft_site_s3.arn}/*",
         "Condition" : {
-            "StringEquals" : {
+          "StringEquals" : {
             "AWS:SourceArn" : aws_cloudfront_distribution.cdn.arn
-            }
+          }
         }
-        }
+      }
     ]
   })
 }
@@ -75,7 +75,7 @@ resource "aws_acm_certificate" "cert" {
   domain_name       = "www.sbox-soft.com"
   validation_method = "DNS"
 
-subject_alternative_names = ["sbox-soft.com"]
+  subject_alternative_names = ["sbox-soft.com"]
 
   lifecycle {
     create_before_destroy = true
@@ -109,9 +109,9 @@ resource "aws_cloudfront_distribution" "cdn" {
 
   # Defines what / how it will cache https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudfront_distribution
   default_cache_behavior {
-    allowed_methods  = ["GET", "HEAD"]
-    cached_methods   = ["GET", "HEAD"]
-    target_origin_id = "s3-origin"
+    allowed_methods        = ["GET", "HEAD"]
+    cached_methods         = ["GET", "HEAD"]
+    target_origin_id       = "s3-origin"
     viewer_protocol_policy = "redirect-to-https"
 
     forwarded_values {
@@ -133,7 +133,7 @@ resource "aws_cloudfront_distribution" "cdn" {
   viewer_certificate {
     acm_certificate_arn = aws_acm_certificate_validation.cert.certificate_arn
     ssl_support_method  = "sni-only"
-    }
+  }
 }
 
 
@@ -152,12 +152,12 @@ resource "cloudflare_dns_record" "cert" {
   zone_id = data.cloudflare_zone.main.zone_id
   name    = each.value.name
   ttl     = 60
-  content   = each.value.record
+  content = each.value.record
   type    = each.value.type
 }
 
 resource "aws_acm_certificate_validation" "cert" {
-  certificate_arn         = aws_acm_certificate.cert.arn
+  certificate_arn = aws_acm_certificate.cert.arn
   validation_record_fqdns = [
     for dvo in aws_acm_certificate.cert.domain_validation_options : dvo.resource_record_name
   ]
@@ -166,18 +166,18 @@ resource "aws_acm_certificate_validation" "cert" {
 # Cloudflare DNS to send traffic over to cloudfront
 resource "cloudflare_dns_record" "www" {
   zone_id = data.cloudflare_zone.main.zone_id
-  name = "www.sbox-soft.com"
-  ttl = 3600
-  type = "CNAME"
+  name    = "www.sbox-soft.com"
+  ttl     = 3600
+  type    = "CNAME"
   content = aws_cloudfront_distribution.cdn.domain_name
   proxied = false
 }
 
 resource "cloudflare_dns_record" "root" {
   zone_id = data.cloudflare_zone.main.zone_id
-  name = "@"
-  ttl = 3600
-  type = "CNAME"
+  name    = "@"
+  ttl     = 3600
+  type    = "CNAME"
   content = aws_cloudfront_distribution.cdn.domain_name
   proxied = false
 }
