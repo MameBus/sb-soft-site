@@ -1,0 +1,5 @@
+Subscription confirmed!
+
+We can kindly confirm your subscription to the SBox-Soft newsletter.
+
+You can unsubscribe any time at www.api.sbox-soft.com/unsubscribe?email={{email}}&token={{token}}.
