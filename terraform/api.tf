@@ -64,44 +64,62 @@ resource "aws_iam_role_policy" "newsletter_policy" {
 }
 
 # Package the Lambda function code
-data "archive_file" "newsletter_code" {
+data "archive_file" "sub_zip" {
   type        = "zip"
-  source_dir  = "${path.module}/../lambda/dist"
-  output_path = "${path.module}/../lambda/function.zip"
+  source_dir  = "${path.module}/../lambda/dist/sub"
+  output_path = "${path.module}/../lambda/sub.zip"
+}
+
+data "archive_file" "sub_confirm_zip" {
+  type        = "zip"
+  source_dir  = "${path.module}/../lambda/dist/sub-confirm"
+  output_path = "${path.module}/../lambda/sub-confirm.zip"
+}
+
+data "archive_file" "unsub_zip" {
+  type        = "zip"
+  source_dir  = "${path.module}/../lambda/dist/unsub"
+  output_path = "${path.module}/../lambda/unsub.zip"
+}
+
+data "archive_file" "unsub_confirm_zip" {
+  type        = "zip"
+  source_dir  = "${path.module}/../lambda/dist/unsub-confirm"
+  output_path = "${path.module}/../lambda/unsub-confirm.zip"
 }
 
 # Lambda functions
 resource "aws_lambda_function" "sub_function" {
-  filename      = data.archive_file.newsletter_code.output_path
+  filename      = data.archive_file.sub_zip.output_path
   function_name = "sb_site_newsletter_sub"
   role          = aws_iam_role.newsletter_lambda_execution_role.arn
-  handler       = "handlers/sub.handler"
+  handler       = "sub.handler"
   runtime       = "nodejs22.x"
 }
 
 resource "aws_lambda_function" "sub_confirm_function" {
-  filename      = data.archive_file.newsletter_code.output_path
+  filename      = data.archive_file.sub_confirm_zip.output_path
   function_name = "sb_site_newsletter_sub_confirm"
   role          = aws_iam_role.newsletter_lambda_execution_role.arn
-  handler       = "handlers/subConfirm.handler"
+  handler       = "sub-confirm.handler"
 
   runtime = "nodejs22.x"
 }
 
 resource "aws_lambda_function" "unsub_function" {
-  filename      = data.archive_file.newsletter_code.output_path
+  filename      = data.archive_file.unsub_zip.output_path
   function_name = "sb_site_newsletter_unsub"
   role          = aws_iam_role.newsletter_lambda_execution_role.arn
-  handler       = "handlers/unsub.handler"
+  handler       = "unsub.handler"
 
   runtime = "nodejs22.x"
 }
 
 resource "aws_lambda_function" "unsub_confirm_function" {
-  filename      = data.archive_file.newsletter_code.output_path
+  filename      = data.archive_file.unsub_confirm_zip.output_path
   function_name = "sb_site_newsletter_unsub_confirm"
   role          = aws_iam_role.newsletter_lambda_execution_role.arn
-  handler       = "handlers/unsubConfirm.handler"
+  handler       = "unsub-confirm.handler"
 
   runtime = "nodejs22.x"
 }
