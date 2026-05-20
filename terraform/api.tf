@@ -110,11 +110,11 @@ resource "aws_apigatewayv2_api" "api" {
       "https://www.sbox-soft.com",
       "https://sbox-soft.com"
     ]
-    allowed_methods = [
+    allow_methods = [
       "POST",
       "OPTIONS"
     ]
-    allowed_headers = [
+    allow_headers = [
       "content-type"
     ]
     max_age = 300
