@@ -81,6 +81,15 @@ resource "aws_acm_certificate" "cert" {
     create_before_destroy = true
   }
 }
+
+# Cloudfront function for mapping URLS e.g. /about to /about/index.html
+resource "aws_cloudfront_function" "url_mapping" {
+  name    = "RewriteDefaultIndexRequest"
+  runtime = "cloudfront-js-2.0"
+  publish = true
+  code    = file("${path.module}/../cloudfront-functions/index.js")
+}
+
 # The actual cloudfront distribution
 
 resource "aws_cloudfront_distribution" "cdn" {
@@ -120,6 +129,11 @@ resource "aws_cloudfront_distribution" "cdn" {
       cookies {
         forward = "none"
       }
+    }
+
+    function_association {
+      event_type   = "viewer-request"
+      function_arn = aws_cloudfront_function.url_mapping.arn
     }
   }
 
