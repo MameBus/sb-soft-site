@@ -1,11 +1,3 @@
-# Note if any resources change region will need to revisit because ACM must be us-east-1
-provider "aws" {
-  region = "us-east-1"
-}
-
-provider "cloudflare" {
-}
-
 # ---------- s3 ----------
 
 # The bucket itself 
@@ -147,10 +139,6 @@ resource "aws_cloudfront_distribution" "cdn" {
 
 # ---------- cloudflare ----------
 
-data "cloudflare_zone" "main" {
-  zone_id = "d531a4ca95a31dacbe6fb4132f127a0e"
-}
-
 // https://registry.terraform.io/providers/-/aws/latest/docs/resources/acm_certificate_validation
 
 resource "cloudflare_dns_record" "cert" {
@@ -187,7 +175,7 @@ resource "cloudflare_dns_record" "www" {
 
 resource "cloudflare_dns_record" "root" {
   zone_id = data.cloudflare_zone.main.zone_id
-  name = "sbox-soft.com"
+  name = "@"
   ttl = 3600
   type = "CNAME"
   content = aws_cloudfront_distribution.cdn.domain_name
