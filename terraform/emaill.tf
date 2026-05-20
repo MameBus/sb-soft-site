@@ -52,6 +52,7 @@ resource "cloudflare_dns_record" "mx" {
   type    = "MX"
   name    = "mail"
   content = "feedback-smtp.us-east-1.amazonses.com"
+  priority = 1
 }
 
 # SPF TXT record, authorizes that amazonses.com is allowed to send emails from this domain
