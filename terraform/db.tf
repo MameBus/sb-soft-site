@@ -9,6 +9,11 @@ resource "aws_dynamodb_table" "subscribers_table" {
     type = "S"
   }
 
+  attribute {
+    name = "verifiedStatus"
+    type = "S"
+  }
+
   global_secondary_index {
     name               = "VerifiedStatusIndex"
     hash_key           = "verifiedStatus"
