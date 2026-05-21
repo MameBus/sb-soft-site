@@ -38,17 +38,17 @@ export async function sub(emailAddress : string) {
     // If doesn't exist create a whole new one
     if (existingSubscriber == null) {
         console.log("Inserting a new subscriber");
-        putSubscriber(newSubscriber);
+        await putSubscriber(newSubscriber);
     }
     // Otherwise does exist and it's unvalidated, replace the token
     else {
         console.log("Subscriber exists so just update with new token")
-        updateSubscriber(newSubscriber);
+        await updateSubscriber(newSubscriber);
     }
 
     // Fire off a subscribe email
     console.log("Sending validation Email");
-    sendSubscribeValidateEmail(emailAddress, token);
+    await sendSubscribeValidateEmail(emailAddress, token);
 }
 
 // Take a token, compare to the db and if it's confirmed, update the db that they are confirmed
@@ -88,14 +88,14 @@ export async function confirmSub(emailAddress : string, token : string) {
 
         // Email confirmation side of things
         console.log("Firing confirmation email");
-        sendSubscribeConfirmationEmail(emailAddress, token);
+        await sendSubscribeConfirmationEmail(emailAddress, token);
     }
 }
 
 async function sendSubscribeValidateEmail(emailAddress : string, token : string) {
-    sendTemplateEmail(emailAddress, makeSubscribeVerifyTemplateData(emailAddress, token), subscribeVerifyTemplateName);
+    await sendTemplateEmail(emailAddress, makeSubscribeVerifyTemplateData(emailAddress, token), subscribeVerifyTemplateName);
 }
 
 async function sendSubscribeConfirmationEmail(emailAddress : string, token : string) {
-    sendTemplateEmail(emailAddress, makeSubscribeVerifyTemplateData(emailAddress, token), subscribeConfirmationTemplateName);   
+    await sendTemplateEmail(emailAddress, makeSubscribeVerifyTemplateData(emailAddress, token), subscribeConfirmationTemplateName);   
 }

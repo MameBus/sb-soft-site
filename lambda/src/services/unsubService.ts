@@ -35,11 +35,11 @@ export async function unsub(emailAddress : string) : Promise<void> {
 
     // Update the record
     console.log(`Updating subscriber as: ${updateSubscriber}`);
-    updateSubscriber(updatedSubscriber);
+    await updateSubscriber(updatedSubscriber);
 
     // Fire off the verify email
     console.log("Firing email");
-    sendUnsubscribeValidateEmail(emailAddress, token);
+    await sendUnsubscribeValidateEmail(emailAddress, token);
 }
 
 // Take a token, compare to the db and if it's confirmed, delete the user from the db
@@ -59,14 +59,14 @@ export async function confirmUnsub(emailAddress : string, token : string) : Prom
     if (validateToken(token, subscriber.token) && subscriber.tokenExpire > new Date()) { // Valid
         console.log("Token was validated doing a delete");
         await deleteSubscriber(emailAddress); // Need to await so that the confirmation doesn't go if it didn't actually work
-        sendUnsubscribeConfirmationEmail(emailAddress);
+        await sendUnsubscribeConfirmationEmail(emailAddress);
     }
 }
 
 async function sendUnsubscribeValidateEmail(emailAddress : string, token : string) {
-    sendTemplateEmail(emailAddress, makeUnsubscribeVerifyTemplateData(emailAddress, token), unsubscribeVerifyTemplateName);
+    await sendTemplateEmail(emailAddress, makeUnsubscribeVerifyTemplateData(emailAddress, token), unsubscribeVerifyTemplateName);
 }
 
 async function sendUnsubscribeConfirmationEmail(emailAddress : string) {
-    sendTemplateEmail(emailAddress, makeUnsubscribeConfirmationTemplateData(emailAddress), unsubscribeVerifyTemplateName);
+    await sendTemplateEmail(emailAddress, makeUnsubscribeConfirmationTemplateData(emailAddress), unsubscribeVerifyTemplateName);
 }
