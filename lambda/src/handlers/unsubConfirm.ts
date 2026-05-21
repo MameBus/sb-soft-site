@@ -21,7 +21,7 @@ export const handler = async (event : APIGatewayProxyEventV2) => {
 
         // Hand over to unsub service
         console.log(`Got Email: ${email} and token ${token}`);
-        confirmUnsub(email, token);
+        await confirmUnsub(email, token);
     } catch (error) {
         console.error(`Failed to process: ${error instanceof Error ? error.message : 'Unknown error'}`);
         throw error;

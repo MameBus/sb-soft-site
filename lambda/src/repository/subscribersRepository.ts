@@ -24,7 +24,7 @@ export async function putSubscriber(subscriber : Subscriber) {
         Item: subscriber
     });
     console.log("Putting subscriber with command: " + JSON.stringify(putCommand));
-    docClient.send(putCommand);
+    await docClient.send(putCommand);
 }
 
 // Update subscriber
@@ -42,7 +42,7 @@ export async function updateSubscriber(subscriber : Subscriber) {
         }
     });
     console.log("Updating subscriber with command: " + JSON.stringify(updateCommand));
-    docClient.send(updateCommand);
+    await docClient.send(updateCommand);
 }
 
 // Delete a subscriber entry
@@ -54,7 +54,7 @@ export async function deleteSubscriber(emailAddress : string) {
         }
     });
     console.log("Deleting subscriber with command: " + JSON.stringify(deleteCommand));
-    docClient.send(deleteCommand);
+    await docClient.send(deleteCommand);
 }
 
 // Grab a subscriber entry from the partition key (emailAddress)

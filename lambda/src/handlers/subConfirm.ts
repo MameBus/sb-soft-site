@@ -20,7 +20,7 @@ export const handler = async (event : APIGatewayProxyEventV2) => {
         const token = subConfirmEvent.token;
 
         console.log(`Got Email: ${email} and token ${token}`);
-        confirmSub(email, token);
+        await confirmSub(email, token);
     } catch (error) {
         console.error(`Failed to process: ${error instanceof Error ? error.message : 'Unknown error'}`);
         throw error;
