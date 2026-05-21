@@ -1,19 +1,24 @@
 import { confirmSub } from "../services/subService.js";
+import { APIGatewayProxyEventV2 } from "aws-lambda"; 
 
 type SubConfirmEvent = {
-    body: {
-        emailAddress : string,
-        token : string
-    }
+    email : string,
+    token : string
 }
 
-export const handler = async (event : SubConfirmEvent) => {
+export const handler = async (event : APIGatewayProxyEventV2) => {
     console.log("Received event:", event);
 
     try {
-        // Hand over to sub service
-        const email = event.body.emailAddress;
-        const token = event.body.token;
+        // Process the body
+        const body = event.body;
+        if (body == undefined) {
+            throw new Error("Request is missing body");
+        }
+        const subConfirmEvent = JSON.parse(body) as SubConfirmEvent;
+        const email = subConfirmEvent.email;
+        const token = subConfirmEvent.token;
+
         console.log(`Got Email: ${email} and token ${token}`);
         confirmSub(email, token);
     } catch (error) {

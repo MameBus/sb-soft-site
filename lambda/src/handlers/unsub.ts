@@ -1,17 +1,23 @@
 import { unsub } from "../services/unsubService.js";
+import { APIGatewayProxyEventV2 } from "aws-lambda";
 
 type UnsubEvent = {
-    body: {
-        emailAddress : string
-    }
+    email : string
 }
 
-export const handler = async (event : UnsubEvent) => {
+export const handler = async (event : APIGatewayProxyEventV2) => {
     console.log("Received event:", event);
 
     try {
+        // Process the body
+        const body = event.body;
+        if (body == undefined) {
+            throw new Error("Request is missing body");
+        }
+        const unsubEvent = JSON.parse(body) as UnsubEvent;
+        const email = unsubEvent.email;
+
         // Hand over to unsub service
-        const email = event.body.emailAddress;
         console.log("Got email from event: " + email);
         unsub(email);
     } catch (error) {

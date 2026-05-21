@@ -1,17 +1,22 @@
 import { sub } from "../services/subService.js";
+import { APIGatewayProxyEventV2 } from "aws-lambda"; 
 
 type SubEvent = {
-    body: {
-        emailAddress : string
-    }
+    email : string,
 }
 
-export const handler = async (event : SubEvent) => {
+export const handler = async (event : APIGatewayProxyEventV2 ) => {
     console.log("Received event:", event);
 
     try {
-        // Hand over to sub service
-        const email = event.body.emailAddress;
+        // Process the body
+        const body = event.body;
+        if (body == undefined) {
+            throw new Error("Request is missing body");
+        }
+        const subEvent = JSON.parse(body) as SubEvent;
+        const email = subEvent.email;
+
         console.log("Got email from event: " + email);
         sub(email);
     } catch (error) {
