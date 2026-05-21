@@ -48,6 +48,16 @@ jobs:
         run: terraform init -no-color
         working-directory: ./terraform
 
+      - name: Terraform Plan
+        id: plan
+        run: terraform plan -no-color -out=tfplan
+        working-directory: ./terraform
+        continue-on-error: true
+
+      - name: Fail on Failed Plan
+        if: steps.plan.outcome == 'failure'
+        run: exit 1
+
       - name: Terraform Apply
         run: terraform apply -auto-approve
         working-directory: ./terraform
