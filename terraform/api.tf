@@ -95,6 +95,7 @@ resource "aws_lambda_function" "sub_function" {
   role          = aws_iam_role.newsletter_lambda_execution_role.arn
   handler       = "sub.handler"
   runtime       = "nodejs22.x"
+  code_sha256   = data.archive_file.sub_zip.output_base64sha256
 }
 
 resource "aws_lambda_function" "sub_confirm_function" {
@@ -102,8 +103,8 @@ resource "aws_lambda_function" "sub_confirm_function" {
   function_name = "sb_site_newsletter_sub_confirm"
   role          = aws_iam_role.newsletter_lambda_execution_role.arn
   handler       = "sub-confirm.handler"
-
-  runtime = "nodejs22.x"
+  runtime       = "nodejs22.x"
+  code_sha256   = data.archive_file.sub_confirm_zip.output_base64sha256
 }
 
 resource "aws_lambda_function" "unsub_function" {
@@ -111,8 +112,8 @@ resource "aws_lambda_function" "unsub_function" {
   function_name = "sb_site_newsletter_unsub"
   role          = aws_iam_role.newsletter_lambda_execution_role.arn
   handler       = "unsub.handler"
-
-  runtime = "nodejs22.x"
+  runtime       = "nodejs22.x"
+  code_sha256   = data.archive_file.unsub_zip.output_base64sha256
 }
 
 resource "aws_lambda_function" "unsub_confirm_function" {
@@ -120,8 +121,8 @@ resource "aws_lambda_function" "unsub_confirm_function" {
   function_name = "sb_site_newsletter_unsub_confirm"
   role          = aws_iam_role.newsletter_lambda_execution_role.arn
   handler       = "unsub-confirm.handler"
-
-  runtime = "nodejs22.x"
+  runtime       = "nodejs22.x"
+  code_sha256   = data.archive_file.unsub_confirm_zip.output_base64sha256
 }
 
 # -- API Gateway --
