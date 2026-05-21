@@ -15,23 +15,20 @@
 
     <script>
         // https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Forms/Sending_forms_through_JavaScript
-        const form = document.querySelector("#subscribe-form");
-    
+   
         async function sendData() {
-            // Associate the FormData object with the form element
-            if (!(form instanceof HTMLFormElement)) {
-                console.log("Could not find the form");
-                return;
-            }
-
+            // Grab data from the form
             const email = document.getElementById("email");
+            if (email == null || !(email instanceof HTMLInputElement)) {
+                throw new Error("Couldn't find form email or input is invalid");
+            }
 
             try {
                 await fetch("https://api.sbox-soft.com/subscribe", {
                     method: "POST",
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        email: email
+                        email: email.value
                     })
                 });
             } catch (e) {
@@ -45,6 +42,7 @@
         }
 
         // Override form submission
+        const form = document.querySelector("#unsubscribe-form");
         form?.addEventListener("submit", (event) => {
             event.preventDefault(); // Stop page reload
             sendData();

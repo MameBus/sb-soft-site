@@ -25,13 +25,16 @@
             }
 
             const email = document.getElementById("email");
+            if (email == null || !(email instanceof HTMLInputElement)) {
+                throw new Error("Couldn't find form email or input is invalid");
+            }
 
             try {
                 await fetch("https://api.sbox-soft.com/unsubscribe", {
                     method: "POST",
-                    // Set the FormData instance as the request body
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        email: email
+                        email: email.value
                     })
                 });
             } catch (e) {
