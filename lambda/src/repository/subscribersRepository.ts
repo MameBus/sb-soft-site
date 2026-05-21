@@ -22,7 +22,8 @@ export async function putSubscriber(subscriber : Subscriber) {
     const putCommand = new PutCommand({
         TableName: tableName,
         Item: subscriber
-    });  
+    });
+    console.log("Putting subscriber with command: " + putCommand);
     docClient.send(putCommand);
 }
 
@@ -40,6 +41,7 @@ export async function updateSubscriber(subscriber : Subscriber) {
             ":_tokenExpire": subscriber.tokenExpire
         }
     });
+    console.log("Updating subscriber with command: " + updateCommand);
     docClient.send(updateCommand);
 }
 
@@ -51,6 +53,7 @@ export async function deleteSubscriber(emailAddress : string) {
             emailAddress: emailAddress
         }
     });
+    console.log("Deleting subscriber with command: " + deleteCommand);
     docClient.send(deleteCommand);
 }
 
@@ -63,10 +66,13 @@ export async function getSubscriber(emailAddress : string) {
         },
         ConsistentRead: true
     });
+    console.log("Getting subscriber with command: " + getCommand);
     const getResponse = await docClient.send(getCommand);
     if (getResponse == null) {
+        console.log("Didn't get a value, returning null");
         return null;
     }
+    console.log("Got value: " + getResponse.Item);
     return getResponse.Item as Subscriber; 
 }
 
@@ -81,11 +87,14 @@ export async function getAllValidatedSubscribers() {
         },
         ConsistentRead: false // Eventual consistency is okay here
     });
+    console.log("Querying for all validated subscribers with command: " + queryCommand);
 
     const response = await docClient.send(queryCommand);
     if (response.Items == null) {
+        console.log("Response was null, returning null");
         return null;
     }
+    console.log("Got " + response.Items.length + " responses");
     const subscribers : Subscriber[] = new Array(response.Items.length);
     response.Items.map((item) => {
         subscribers.push(item as Subscriber);

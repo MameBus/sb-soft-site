@@ -12,8 +12,11 @@ export async function sub(emailAddress : string) {
     // Check first if there is a subscriber entry
     const existingSubscriber = await getSubscriber(emailAddress);
     
+    console.log("Tried to get subscriber. Got: " + existingSubscriber);
+
     // If the subscriber exists and is already verified then we do nothing
     if (existingSubscriber?.verifiedStatus == verifiedStatusValues.verified) {
+        console.log("Subscriber is already verified. Exiting.");
         return;
     }
 
@@ -30,35 +33,45 @@ export async function sub(emailAddress : string) {
         tokenExpire: expiry
     }
 
+    console.log("Built a new subscriber: " + newSubscriber);
+
     // If doesn't exist create a whole new one
     if (existingSubscriber == null) {
+        console.log("Inserting a new subscriber");
         putSubscriber(newSubscriber);
     }
     // Otherwise does exist and it's unvalidated, replace the token
     else {
+        console.log("Subscriber exists so just update with new token")
         updateSubscriber(newSubscriber);
     }
 
     // Fire off a subscribe email
+    console.log("Sending validation Email");
     sendSubscribeValidateEmail(emailAddress, token);
 }
 
 // Take a token, compare to the db and if it's confirmed, update the db that they are confirmed
 export async function confirmSub(emailAddress : string, token : string) {
     // First we need to get the subscriber to compare the tokens
+    console.log("Getting the subscriber record");
     var subscriber = await getSubscriber(emailAddress);
+    console.log(`Got subscriber as: ${subscriber}`);
 
     // If we didn't find the subscriber, then we don't do anything
     if (subscriber == null) {
+        console.log("Subscriber is null, returning");
         return;
     }
     // If we did find the subscriber, and they are already verified, we do nothing
     else if (subscriber.verifiedStatus == verifiedStatusValues.verified) {
+        console.log("Subscriber is already verified, returning");
         return;
     }
 
     // Otherwise we just compare the token we got with the hashed token in the record and check the expiry
     if (validateToken(token, subscriber.token) && subscriber.tokenExpire > new Date()) { // Valid
+        console.log("Token is valid");
         subscriber.verifiedStatus = verifiedStatusValues.verified;
         
         // Generate a new token which will be used as the unsubscribe token that is sent along with the unsubscribe email
@@ -70,9 +83,11 @@ export async function confirmSub(emailAddress : string, token : string) {
         subscriber.tokenExpire = expiry;
 
         // Db side of things
-        updateSubscriber(subscriber);
+        console.log(`Updating subscriber to be: ${subscriber}`);
+        await updateSubscriber(subscriber);
 
         // Email confirmation side of things
+        console.log("Firing confirmation email");
         sendSubscribeConfirmationEmail(emailAddress, token);
     }
 }
@@ -82,6 +97,5 @@ async function sendSubscribeValidateEmail(emailAddress : string, token : string)
 }
 
 async function sendSubscribeConfirmationEmail(emailAddress : string, token : string) {
-    sendTemplateEmail(emailAddress, makeSubscribeVerifyTemplateData(emailAddress, token), subscribeConfirmationTemplateName);
-    
+    sendTemplateEmail(emailAddress, makeSubscribeVerifyTemplateData(emailAddress, token), subscribeConfirmationTemplateName);   
 }

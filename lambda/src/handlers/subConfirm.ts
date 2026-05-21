@@ -1,4 +1,4 @@
-import { confirmSub, sub } from "../services/subService.js";
+import { confirmSub } from "../services/subService.js";
 
 type SubConfirmEvent = {
     emailAddress : string,
@@ -10,7 +10,10 @@ export const handler = async (event : SubConfirmEvent) => {
 
     try {
         // Hand over to sub service
-        confirmSub(event.emailAddress, event.token);
+        const email = event.emailAddress;
+        const token = event.token;
+        console.log(`Got Email: ${email} and token ${token}`);
+        confirmSub(email, token);
     } catch (error) {
         console.error(`Failed to process: ${error instanceof Error ? error.message : 'Unknown error'}`);
         throw error;

@@ -10,10 +10,13 @@ const tokenTtl = 60 * 60 * 24; // 1 day
 // Handle generating a token, update the dynamo db record for the user, and fire off an Email
 export async function unsub(emailAddress : string) : Promise<void> {
     // Check first if there is a subscriber entry
+    console.log("Getting existing entry")
     const existingSubscriber = await getSubscriber(emailAddress);
+    console.log(`Got subscriber as ${existingSubscriber}`);
 
     // If there is no record or they aren't verified anyway just do nothing
     if (existingSubscriber == null || existingSubscriber.verifiedStatus == verifiedStatusValues.awaiting) {
+        console.log("Didn't get a subscriber or they're still awaiting anyway");
         return;
     }
 
@@ -31,28 +34,33 @@ export async function unsub(emailAddress : string) : Promise<void> {
     }
 
     // Update the record
+    console.log(`Updating subscriber as: ${updateSubscriber}`);
     updateSubscriber(updatedSubscriber);
 
     // Fire off the verify email
+    console.log("Firing email");
     sendUnsubscribeValidateEmail(emailAddress, token);
 }
 
 // Take a token, compare to the db and if it's confirmed, delete the user from the db
 export async function confirmUnsub(emailAddress : string, token : string) : Promise<void> {
     // First we need to get the subscriber to compare the tokens
+    console.log(`Getting subscriber`);
     var subscriber = await getSubscriber(emailAddress);
+    console.log(`Got subscriber as: ${subscriber}`);
 
     // If we didn't find the subscriber or they aren't verified anyway, then we don't do anything
     if (subscriber == null || subscriber.verifiedStatus == verifiedStatusValues.awaiting) {
+        console.log("Couldn't find subscriber or they aren't verified");
         return;
     }
 
     // Otherwise we just compare the token we got with the hashed token in the record and check the expiry
     if (validateToken(token, subscriber.token) && subscriber.tokenExpire > new Date()) { // Valid
-        deleteSubscriber(emailAddress);
+        console.log("Token was validated doing a delete");
+        await deleteSubscriber(emailAddress); // Need to await so that the confirmation doesn't go if it didn't actually work
+        sendUnsubscribeConfirmationEmail(emailAddress);
     }
-    
-    sendUnsubscribeConfirmationEmail(emailAddress);
 }
 
 async function sendUnsubscribeValidateEmail(emailAddress : string, token : string) {

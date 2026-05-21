@@ -9,7 +9,9 @@ export const handler = async (event : SubEvent) => {
 
     try {
         // Hand over to sub service
-        sub(event.emailAddress);
+        const email = event.emailAddress;
+        console.log("Got email from event: " + email);
+        sub(email);
     } catch (error) {
         console.error(`Failed to process: ${error instanceof Error ? error.message : 'Unknown error'}`);
         throw error;

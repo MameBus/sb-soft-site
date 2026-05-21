@@ -14,8 +14,9 @@ export async function sendTemplateEmail(recipientEmail : string, templateData : 
         Source: fromAddress,
         Template: templateName
     });
+    console.log(`Sending tempalted email with command: ${command}`)
     try {
-        return await client.send(command);
+        client.send(command);
     } catch (error) {
         if (error instanceof Error) {
             console.log("Send template email error " + error);
