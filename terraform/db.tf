@@ -3,15 +3,9 @@ resource "aws_dynamodb_table" "subscribers_table" {
   name         = "site-newsletter-subscribers"
   billing_mode = "PAY_PER_REQUEST" # May need to revist
   hash_key     = "emailAddress"
-  range_key    = "verifiedStatus"
 
   attribute {
     name = "emailAddress"
-    type = "S"
-  }
-
-  attribute {
-    name = "verifiedStatus"
     type = "S"
   }
 
