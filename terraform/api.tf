@@ -20,7 +20,9 @@ data "aws_iam_policy_document" "lambda_permissions" {
     actions = [
       "dynamodb:DeleteItem",
       "dynamodb:PutItem",
-      "dynamodb:UpdateItem"
+      "dynamodb:UpdateItem",
+      "dynamodb:GetItem",
+      "dynamodb:QueryItem"
     ]
     resources = [aws_dynamodb_table.subscribers_table.arn]
   }
