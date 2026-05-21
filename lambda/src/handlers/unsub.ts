@@ -1,7 +1,9 @@
 import { unsub } from "../services/unsubService.js";
 
 type UnsubEvent = {
-    emailAddress : string
+    body: {
+        emailAddress : string
+    }
 }
 
 export const handler = async (event : UnsubEvent) => {
@@ -9,7 +11,7 @@ export const handler = async (event : UnsubEvent) => {
 
     try {
         // Hand over to unsub service
-        const email = event.emailAddress;
+        const email = event.body.emailAddress;
         console.log("Got email from event: " + email);
         unsub(email);
     } catch (error) {

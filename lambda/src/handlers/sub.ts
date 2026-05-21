@@ -1,7 +1,9 @@
 import { sub } from "../services/subService.js";
 
 type SubEvent = {
-    emailAddress : string
+    body: {
+        emailAddress : string
+    }
 }
 
 export const handler = async (event : SubEvent) => {
@@ -9,7 +11,7 @@ export const handler = async (event : SubEvent) => {
 
     try {
         // Hand over to sub service
-        const email = event.emailAddress;
+        const email = event.body.emailAddress;
         console.log("Got email from event: " + email);
         sub(email);
     } catch (error) {

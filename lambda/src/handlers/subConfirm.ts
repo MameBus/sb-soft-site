@@ -1,8 +1,10 @@
 import { confirmSub } from "../services/subService.js";
 
 type SubConfirmEvent = {
-    emailAddress : string,
-    token : string
+    body: {
+        emailAddress : string,
+        token : string
+    }
 }
 
 export const handler = async (event : SubConfirmEvent) => {
@@ -10,8 +12,8 @@ export const handler = async (event : SubConfirmEvent) => {
 
     try {
         // Hand over to sub service
-        const email = event.emailAddress;
-        const token = event.token;
+        const email = event.body.emailAddress;
+        const token = event.body.token;
         console.log(`Got Email: ${email} and token ${token}`);
         confirmSub(email, token);
     } catch (error) {

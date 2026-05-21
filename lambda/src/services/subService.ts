@@ -84,7 +84,7 @@ export async function confirmSub(emailAddress : string, token : string) {
 
         // Db side of things
         console.log(`Updating subscriber to be: ${subscriber}`);
-        await updateSubscriber(subscriber);
+        await updateSubscriber(subscriber); // Need to await so that the confirmation doesn't go if it didn't actually work
 
         // Email confirmation side of things
         console.log("Firing confirmation email");
