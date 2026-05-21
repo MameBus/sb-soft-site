@@ -132,7 +132,8 @@ resource "aws_apigatewayv2_api" "api" {
     # TODO this probably shouldn't be hardcoded
     allow_origins = [
       "https://www.sbox-soft.com",
-      "https://sbox-soft.com"
+      "https://sbox-soft.com",
+      "http://localhost:4321"
     ]
     allow_methods = [
       "POST",
