@@ -23,7 +23,7 @@ export async function putSubscriber(subscriber : Subscriber) {
         TableName: tableName,
         Item: subscriber
     });
-    console.log("Putting subscriber with command: " + putCommand);
+    console.log("Putting subscriber with command: " + JSON.stringify(putCommand));
     docClient.send(putCommand);
 }
 
@@ -41,7 +41,7 @@ export async function updateSubscriber(subscriber : Subscriber) {
             ":_tokenExpire": subscriber.tokenExpire
         }
     });
-    console.log("Updating subscriber with command: " + updateCommand);
+    console.log("Updating subscriber with command: " + JSON.stringify(updateCommand));
     docClient.send(updateCommand);
 }
 
@@ -53,7 +53,7 @@ export async function deleteSubscriber(emailAddress : string) {
             emailAddress: emailAddress
         }
     });
-    console.log("Deleting subscriber with command: " + deleteCommand);
+    console.log("Deleting subscriber with command: " + JSON.stringify(deleteCommand));
     docClient.send(deleteCommand);
 }
 
@@ -62,17 +62,17 @@ export async function getSubscriber(emailAddress : string) {
     const getCommand = new GetCommand({
         TableName: tableName,
         Key: {
-            emailAddress
+            emailAddress: emailAddress
         },
         ConsistentRead: true
     });
-    console.log("Getting subscriber with command: " + getCommand);
+    console.log("Getting subscriber with command: " + JSON.stringify(getCommand));
     const getResponse = await docClient.send(getCommand);
     if (getResponse == null) {
         console.log("Didn't get a value, returning null");
         return null;
     }
-    console.log("Got value: " + getResponse.Item);
+    console.log("Got value: " + JSON.stringify(getResponse.Item));
     return getResponse.Item as Subscriber; 
 }
 
@@ -87,7 +87,7 @@ export async function getAllValidatedSubscribers() {
         },
         ConsistentRead: false // Eventual consistency is okay here
     });
-    console.log("Querying for all validated subscribers with command: " + queryCommand);
+    console.log("Querying for all validated subscribers with command: " + JSON.stringify(queryCommand));
 
     const response = await docClient.send(queryCommand);
     if (response.Items == null) {
