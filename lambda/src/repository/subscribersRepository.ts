@@ -34,7 +34,7 @@ export async function updateSubscriber(subscriber : Subscriber) {
         Key: {
             emailAddress: subscriber.emailAddress
         },
-        UpdateExpression: "set verifiedStatus = :_verifiedStatus, validationToken = :_token, tokenExpire = :_tokenExpire",
+        UpdateExpression: "set verifiedStatus = :_verifiedStatus, validationToken = :_validationToken, tokenExpire = :_tokenExpire",
         ExpressionAttributeValues: {
             ":_verifiedStatus": subscriber.verifiedStatus,
             ":_validationToken": subscriber.validationToken,
