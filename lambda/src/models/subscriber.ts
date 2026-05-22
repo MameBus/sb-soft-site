@@ -2,7 +2,7 @@
 export type Subscriber = {
     emailAddress: string,
     verifiedStatus: string,
-    token: string,
+    validationToken: string,
     tokenExpire: string
 };
 

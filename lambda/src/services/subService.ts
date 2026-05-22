@@ -29,7 +29,7 @@ export async function sub(emailAddress : string) {
     const newSubscriber : Subscriber = {
         emailAddress: emailAddress,
         verifiedStatus: verifiedStatusValues.awaiting,
-        token: hash,
+        validationToken: hash,
         tokenExpire: expiry.toISOString()
     }
 
@@ -70,7 +70,7 @@ export async function confirmSub(emailAddress : string, token : string) {
     }
 
     // Otherwise we just compare the token we got with the hashed token in the record and check the expiry
-    if (validateToken(token, subscriber.token) && subscriber.tokenExpire > new Date().toISOString()) { // Valid
+    if (validateToken(token, subscriber.validationToken) && subscriber.tokenExpire > new Date().toISOString()) { // Valid
         console.log("Token is valid");
         subscriber.verifiedStatus = verifiedStatusValues.verified;
         
@@ -79,7 +79,7 @@ export async function confirmSub(emailAddress : string, token : string) {
         const hash = hashToken(token);
         const expiry = generateTokenExpiry(tokenTtl).toISOString();
 
-        subscriber.token = hash;
+        subscriber.validationToken = hash;
         subscriber.tokenExpire = expiry;
 
         // Db side of things

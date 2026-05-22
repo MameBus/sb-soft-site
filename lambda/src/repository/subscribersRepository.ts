@@ -34,10 +34,10 @@ export async function updateSubscriber(subscriber : Subscriber) {
         Key: {
             emailAddress: subscriber.emailAddress
         },
-        UpdateExpression: "set verifiedStatus = :_verifiedStatus, token = :_token, tokenExpire = :_tokenExpire",
+        UpdateExpression: "set verifiedStatus = :_verifiedStatus, validationToken = :_token, tokenExpire = :_tokenExpire",
         ExpressionAttributeValues: {
             ":_verifiedStatus": subscriber.verifiedStatus,
-            ":_token": subscriber.token,
+            ":_validationToken": subscriber.validationToken,
             ":_tokenExpire": subscriber.tokenExpire
         }
     });

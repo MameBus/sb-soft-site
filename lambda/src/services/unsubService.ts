@@ -29,7 +29,7 @@ export async function unsub(emailAddress : string) : Promise<void> {
     const updatedSubscriber : Subscriber = {
         emailAddress: emailAddress,
         verifiedStatus: verifiedStatusValues.verified,
-        token: hash,
+        validationToken: hash,
         tokenExpire: expiry.toISOString()
     }
 
@@ -56,7 +56,7 @@ export async function confirmUnsub(emailAddress : string, token : string) : Prom
     }
 
     // Otherwise we just compare the token we got with the hashed token in the record and check the expiry
-    if (validateToken(token, subscriber.token) && subscriber.tokenExpire > new Date().toISOString()) { // Valid
+    if (validateToken(token, subscriber.validationToken) && subscriber.tokenExpire > new Date().toISOString()) { // Valid
         console.log("Token was validated doing a delete");
         await deleteSubscriber(emailAddress); // Need to await so that the confirmation doesn't go if it didn't actually work
         await sendUnsubscribeConfirmationEmail(emailAddress);
