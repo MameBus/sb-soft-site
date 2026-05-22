@@ -11,7 +11,7 @@ resource "cloudflare_dns_record" "ses_verification" {
   zone_id = data.cloudflare_zone.main.zone_id
   name    = "_amazonses"
   type    = "TXT"
-  content = aws_ses_domain_identity.newsletter_domain.verification_token
+  content = "\"${aws_ses_domain_identity.newsletter_domain.verification_token}\""
   ttl     = 3600 # 1 Hour
 }
 
@@ -51,7 +51,7 @@ resource "cloudflare_dns_record" "mx" {
   ttl      = 3600 # 1 hour
   type     = "MX"
   name     = "mail"
-  content  = "feedback-smtp.us-east-1.amazonses.com"
+  content  = "10 feedback-smtp.us-east-1.amazonses.com"
   priority = 1
 }
 
@@ -61,7 +61,7 @@ resource "cloudflare_dns_record" "spf" {
   ttl     = 3600 # 1 hour
   type    = "TXT"
   name    = "mail"
-  content = "v=spf1 include:amazonses.com ~all"
+  content = "\"v=spf1 include:amazonses.com ~all\""
 }
 
 # DMARC record, tells how to handle any mail where the other verification stuff fails to prevent people spoofing the address
@@ -70,5 +70,5 @@ resource "cloudflare_dns_record" "dmarc" {
   ttl     = 3600 # 1 hour
   type    = "TXT"
   name    = "_dmarc"
-  content = "v=DMARC1; p=quarantine;"
+  content = "\"v=DMARC1; p=quarantine;\""
 }
