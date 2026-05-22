@@ -51,7 +51,7 @@ resource "cloudflare_dns_record" "mx" {
   ttl      = 3600 # 1 hour
   type     = "MX"
   name     = "mail"
-  content  = "10 feedback-smtp.us-east-1.amazonses.com"
+  content  = "feedback-smtp.us-east-1.amazonses.com"
   priority = 1
 }
 
