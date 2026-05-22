@@ -41,7 +41,7 @@ data "aws_iam_policy_document" "lambda_permissions" {
       variable = "ses:FromAddress"
 
       values = [
-        "*@sb-soft.com"
+        "noreply@sbox-soft.com"
       ]
     }
   }
