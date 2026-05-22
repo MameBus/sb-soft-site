@@ -3,7 +3,7 @@ export type Subscriber = {
     emailAddress: string,
     verifiedStatus: string,
     token: string,
-    tokenExpire: Date
+    tokenExpire: string
 };
 
 export const verifiedStatusValues = {

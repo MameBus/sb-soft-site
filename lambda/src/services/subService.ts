@@ -30,7 +30,7 @@ export async function sub(emailAddress : string) {
         emailAddress: emailAddress,
         verifiedStatus: verifiedStatusValues.awaiting,
         token: hash,
-        tokenExpire: expiry
+        tokenExpire: expiry.toISOString()
     }
 
     console.log("Built a new subscriber: " + newSubscriber);
@@ -70,14 +70,14 @@ export async function confirmSub(emailAddress : string, token : string) {
     }
 
     // Otherwise we just compare the token we got with the hashed token in the record and check the expiry
-    if (validateToken(token, subscriber.token) && subscriber.tokenExpire > new Date()) { // Valid
+    if (validateToken(token, subscriber.token) && subscriber.tokenExpire > new Date().toISOString()) { // Valid
         console.log("Token is valid");
         subscriber.verifiedStatus = verifiedStatusValues.verified;
         
         // Generate a new token which will be used as the unsubscribe token that is sent along with the unsubscribe email
         const token = generateRandomToken();
         const hash = hashToken(token);
-        const expiry = generateTokenExpiry(tokenTtl);
+        const expiry = generateTokenExpiry(tokenTtl).toISOString();
 
         subscriber.token = hash;
         subscriber.tokenExpire = expiry;
