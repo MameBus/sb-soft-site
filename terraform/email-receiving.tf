@@ -169,7 +169,7 @@ resource "aws_iam_role_policy" "ses_sns_policy" {
 resource "aws_ses_receipt_rule" "contact_notify" {
   name          = "notify"
   rule_set_name = aws_ses_receipt_rule_set.contact_rules.rule_set_name
-  recipients    = ["contact@sbox-soft.com"]
+  recipients    = ["contact@inbound.sbox-soft.com"]
   enabled       = true
   scan_enabled  = true
 
@@ -183,4 +183,14 @@ resource "aws_ses_receipt_rule" "contact_notify" {
     topic_arn = aws_sns_topic.contact_notification.arn
     position  = 2
   }
+}
+
+# Cloudflare record for inbound receving emails
+resource "cloudflare_dns_record" "inbound_mx" {
+  zone_id  = data.cloudflare_zone.main.zone_id
+  ttl      = 3600 # 1 hour
+  type     = "MX"
+  name     = "inbound"
+  content  = "feedback-smtp.us-east-1.amazonses.com"
+  priority = 1
 }
