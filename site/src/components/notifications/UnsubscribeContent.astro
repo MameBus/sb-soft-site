@@ -1,57 +1,14 @@
+---
+import UnsubscribeApi from "../api/UnsubscribeApi";
+
+---
+
 <div>
     <h2 class="text-center text-3xl font-semibold">Unsubscribe</h2>
 
     <p class="mt-5">Sorry to see you go! Unsubscribe using the form below.</p>
-
-    <form id="unsubscribe-form" class="bg-gray-100 rounded-base p-5 w-100 mx-auto mt-10">
-        <label for="email">Email:</label><br>
-        <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight bg-white focus:outline-none focus:shadow-outline" id="email" name="email" type="email">
-        
-        <br>
-        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mt-10" type="submit">Unsubscribe</button>
     
-        <br><p id="confirmation" class="text-green-500 mt-10 invisible">Request sent. Check your Email for a confirmation to unsubscribe.</p>
-    </form>
-    
-    <script>
-        // https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Forms/Sending_forms_through_JavaScript
-        const form = document.querySelector("#unsubscribe-form");
-    
-        async function sendData() {
-            // Associate the FormData object with the form element
-            if (!(form instanceof HTMLFormElement)) {
-                console.log("Could not find the form");
-                return;
-            }
-
-            const email = document.getElementById("email");
-            if (email == null || !(email instanceof HTMLInputElement)) {
-                throw new Error("Couldn't find form email or input is invalid");
-            }
-
-            try {
-                await fetch("https://api.sbox-soft.com/unsubscribe", {
-                    method: "POST",
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        email: email.value
-                    })
-                });
-            } catch (e) {
-                console.error(e);
-            }
-        }
-
-        async function showMessage() {
-            const message = document.querySelector("#confirmation");
-            message?.classList.remove("invisible");
-        }
-
-        // Override form submission
-        form?.addEventListener("submit", (event) => {
-            event.preventDefault(); // Stop page reload
-            sendData();
-            showMessage();
-        });
-    </script>
+    <div class="w-full">
+        <UnsubscribeApi client:load />
+    </div>
 </div>

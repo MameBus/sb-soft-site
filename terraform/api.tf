@@ -234,7 +234,7 @@ resource "aws_apigatewayv2_route" "sub" {
 resource "aws_apigatewayv2_route" "sub_confirm" {
   api_id = aws_apigatewayv2_api.api.id
 
-  route_key = "GET /subscribe-confirm"
+  route_key = "POST /subscribe-confirm"
 
   target = "integrations/${aws_apigatewayv2_integration.sub_confirm.id}"
 }
@@ -250,7 +250,7 @@ resource "aws_apigatewayv2_route" "unsub" {
 resource "aws_apigatewayv2_route" "unsub_confirm" {
   api_id = aws_apigatewayv2_api.api.id
 
-  route_key = "GET /unsubscribe-confirm"
+  route_key = "POST /unsubscribe-confirm"
 
   target = "integrations/${aws_apigatewayv2_integration.unsub_confirm.id}"
 }

@@ -1,12 +1,13 @@
+import { buildResponse } from "../services/responseService.js";
 import { confirmUnsub } from "../services/unsubService.js";
-import { APIGatewayProxyEventV2 } from "aws-lambda";
+import { APIGatewayProxyEventV2, APIGatewayProxyResultV2 } from "aws-lambda";
 
 type UnsubConfirmEvent = {
     email : string,
     token : string
 }
 
-export const handler = async (event : APIGatewayProxyEventV2) => {
+export async function handler(event : APIGatewayProxyEventV2 ) : Promise<APIGatewayProxyResultV2> {
     console.log("Received event:", event);
 
     try {
@@ -21,7 +22,23 @@ export const handler = async (event : APIGatewayProxyEventV2) => {
 
         // Hand over to unsub service
         console.log(`Got Email: ${email} and token ${token}`);
-        await confirmUnsub(email, token);
+        const confirmUnsubResult = await confirmUnsub(email, token);
+
+        var responseCode;
+        var responseMessage;
+        switch (confirmUnsubResult) {
+            case true:
+                responseCode = 200;
+                responseMessage = "Success"
+                break;
+            case false:
+            default:
+                responseCode = 400;
+                responseMessage = "Verification Failed"
+                break;
+        }
+        
+        return buildResponse(responseCode, responseMessage);
     } catch (error) {
         console.error(`Failed to process: ${error instanceof Error ? error.message : 'Unknown error'}`);
         throw error;

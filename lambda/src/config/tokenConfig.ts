@@ -1,0 +1,1 @@
+export const TOKEN_TTL = 60 * 60 * 24; // 24 hours

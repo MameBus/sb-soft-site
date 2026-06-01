@@ -1,0 +1,1 @@
+export const apiEndpoint = "https://api.sbox-soft.com"

@@ -2,4 +2,4 @@ Please confirm you'd like to cancel your subscription.
         
 If this wasn't you, then you can disregard this Email.
 
-Hit this link to confirm your cancellation to SBox-Soft's newsletter: www.api.sbox-soft.com/unsubscribe-verify?email={{email}}&token={{token}}
+Hit this link to confirm your cancellation to SBox-Soft's newsletter: https://www.sbox-soft.com/unsubscribe/verify?email={{email}}&token={{token}}
