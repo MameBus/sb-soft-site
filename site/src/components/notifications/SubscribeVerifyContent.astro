@@ -1,13 +1,7 @@
 ---
 import SubscribeConfirmApi from "../api/SubscribeConfirmApi";
-
-const requestBody = {
-    email: Astro.url.searchParams.get('email') || '',
-    token: Astro.url.searchParams.get('token') || ''
-}
-
 ---
 
 <div>
-    <SubscribeConfirmApi client:load requestBody={requestBody} />
+    <SubscribeConfirmApi client:load/>
 </div>
