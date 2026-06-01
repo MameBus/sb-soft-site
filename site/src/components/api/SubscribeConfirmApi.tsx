@@ -12,7 +12,7 @@ function SubscribeConfirmApi({ requestBody } : SubscribeConfirmApiProps ) {
     }
 
     return <div className="w-full">
-        <RequestAndWait endpoint="/subscribe-verify" requestBody={requestBody} requestId={1} responseMapping={responseMapping} />
+        <RequestAndWait endpoint="/subscribe-confirm" requestBody={requestBody} responseMapping={responseMapping} />
     </div>
 }
 

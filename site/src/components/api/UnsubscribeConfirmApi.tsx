@@ -11,7 +11,7 @@ function UnsubscribeConfirmApi({ requestBody } : UnsubscribeConfirmApiProps ) {
     }
 
     return <div className="w-full">
-        <RequestAndWait endpoint="/unsubscribe-verify" requestBody={requestBody} requestId={1} responseMapping={responseMapping} />
+        <RequestAndWait endpoint="/unsubscribe-verify" requestBody={requestBody} responseMapping={responseMapping} />
     </div>
 }
 
