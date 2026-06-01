@@ -17,11 +17,11 @@ resource "aws_kms_key" "contact_key" {
         Principal = {
           AWS = "arn:aws:iam::786401692952:root"
         }
-        Action = "kms:*"
+        Action   = "kms:*"
         Resource = "*"
       },
       {
-        Sid = "AllowSESToUseKeyViaIAMRole"
+        Sid    = "AllowSESToUseKeyViaIAMRole"
         Effect = "Allow"
         Principal = {
           AWS = aws_iam_role.ses_receipt_role.arn
@@ -41,7 +41,7 @@ resource "aws_kms_key" "contact_key" {
 resource "aws_s3_bucket_server_side_encryption_configuration" "contact_encryption" {
   bucket = aws_s3_bucket.contact_emails.id
 
-  rule { 
+  rule {
     apply_server_side_encryption_by_default {
       kms_master_key_id = aws_kms_key.contact_key.arn
       sse_algorithm     = "aws:kms"
@@ -99,9 +99,13 @@ resource "aws_sns_topic_policy" "contact_sns_policy" {
   })
 }
 
+resource "aws_ses_receipt_rule_set" "contact_rules" {
+  rule_set_name = "contact-rules"
+}
+
 # Rule set related to contact emails
 resource "aws_ses_active_receipt_rule_set" "contact_rules" {
-  rule_set_name = "contact-rules"
+  rule_set_name = aws_ses_receipt_rule_set.contact_rules.rule_set_name
 }
 
 # Permissions for ses to access s3 and sns
@@ -154,8 +158,8 @@ resource "aws_iam_role_policy" "ses_sns_policy" {
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [{
-      Effect = "Allow"
-      Action = "sns:Publish"
+      Effect   = "Allow"
+      Action   = "sns:Publish"
       Resource = aws_sns_topic.contact_notification.arn
     }]
   })
@@ -164,19 +168,19 @@ resource "aws_iam_role_policy" "ses_sns_policy" {
 # Rule for actioning contact emails
 resource "aws_ses_receipt_rule" "contact_notify" {
   name          = "notify"
-  rule_set_name = aws_ses_active_receipt_rule_set.contact_rules.rule_set_name
+  rule_set_name = aws_ses_receipt_rule_set.contact_rules.rule_set_name
   recipients    = ["contact@sbox-soft.com"]
   enabled       = true
   scan_enabled  = true
 
   s3_action {
-    bucket_name = aws_s3_bucket.contact_emails.bucket
-    position = 1
+    bucket_name  = aws_s3_bucket.contact_emails.bucket
+    position     = 1
     iam_role_arn = aws_iam_role.ses_receipt_role.arn
   }
 
   sns_action {
     topic_arn = aws_sns_topic.contact_notification.arn
-    position = 2
+    position  = 2
   }
 }
