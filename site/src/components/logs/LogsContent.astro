@@ -7,7 +7,7 @@ const logs = await getCollection('logs');
 <div>
     <h2 class="text-center text-3xl font-semibold">Logs</h2>
 
-    <p class="my-3">Want to never miss an update? Head over to <a class="text-blue-500" href="/notifications">notifications</a> to subscribe to our newsletter and get notified for each new devlog.</p>
+    <p class="my-3">Want to never miss an update? Head over to <a class="text-blue-500" href="/subscribe">notifications</a> to subscribe to our newsletter and get notified for each new devlog.</p>
 
     {logs.map((log => (
         <LogCard log={log}/>

@@ -1,0 +1,12 @@
+---
+import UnsubscribeConfirmApi from "../api/UnsubscribeConfirmApi";
+
+const requestBody = {
+    email: Astro.url.searchParams.get('email') || '',
+    token: Astro.url.searchParams.get('token') || ''
+}
+---
+
+<div>
+    <UnsubscribeConfirmApi client:load requestBody={requestBody} />
+</div>
