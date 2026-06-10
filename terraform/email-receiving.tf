@@ -66,6 +66,40 @@ resource "aws_s3_bucket" "contact_emails" {
   bucket = "sbox-soft-contact-emails"
 }
 
+# Access policy to allow ses to write to s3
+resource "aws_s3_bucket_policy" "contact_ses" {
+  bucket = aws_s3_bucket.contact_emails.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid    = "AllowSESPuts"
+        Effect = "Allow"
+
+        Principal = {
+          Service = "ses.amazonaws.com"
+        }
+
+        Action = [
+          "s3:PutObject"
+        ]
+
+        Resource = "${aws_s3_bucket.contact_emails.arn}/*"
+
+        Condition = {
+          StringEquals = {
+            "AWS:SourceAccount" = "786401692952"
+          }
+          ArnLike = {
+            "AWS:SourceArn" = aws_ses_receipt_rule_set.contact_rules
+          }
+        }
+      }
+    ]
+  })
+}
+
 # Some encryption stuff to make sure Emails are securely stored
 resource "aws_kms_key" "contact_key" {
   description             = "Key for SES email encryption"
