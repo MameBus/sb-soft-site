@@ -48,7 +48,7 @@ resource "cloudflare_dns_record" "inbound_mx" {
   ttl      = 3600 # 1 hour
   type     = "MX"
   name     = "inbound"
-  content  = "inbound-smtp.us-east-1.amazonses.com"
+  content  = "inbound-smtp.us-east-1.amazonaws.com"
   priority = 1
 }
 
