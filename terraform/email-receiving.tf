@@ -21,7 +21,7 @@ resource "aws_ses_domain_identity_verification" "contact_identity_verification" 
 # Mail from to configure sender domain instead of amazon default
 resource "aws_ses_domain_mail_from" "contact_mail_from" {
   domain           = aws_ses_domain_identity.contact_domain.domain
-  mail_from_domain = "inbound.sbox-soft.com"
+  mail_from_domain = "mail.inbound.sbox-soft.com"
 }
 
 # DKIM generation resource
