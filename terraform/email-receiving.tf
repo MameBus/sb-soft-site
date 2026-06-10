@@ -92,7 +92,7 @@ resource "aws_s3_bucket_policy" "contact_ses" {
             "AWS:SourceAccount" = "786401692952"
           }
           ArnLike = {
-            "AWS:SourceArn" = aws_ses_receipt_rule_set.contact_rules
+            "AWS:SourceArn" = aws_ses_receipt_rule_set.contact_rules.arn
           }
         }
       }
