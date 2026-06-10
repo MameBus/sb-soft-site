@@ -36,7 +36,7 @@ resource "cloudflare_dns_record" "contact_dkim" {
   ttl     = 3600 # 1 hour
   type    = "CNAME"
   # For each dkim
-  name    = "${aws_ses_domain_dkim.contact_dkim.dkim_tokens[count.index]}.inbound._domainkey"
+  name    = "${aws_ses_domain_dkim.contact_dkim.dkim_tokens[count.index]}._domainkey.inbound"
   content = "${aws_ses_domain_dkim.contact_dkim.dkim_tokens[count.index]}.dkim.amazonses.com"
 
   depends_on = [aws_ses_domain_identity.contact_domain]
