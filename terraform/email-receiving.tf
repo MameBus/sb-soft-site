@@ -1,3 +1,66 @@
+# SES Domain for receiving
+resource "aws_ses_domain_identity" "contact_domain" {
+  domain = "inbound.sbox-soft.com"
+}
+
+# Verification TXT record, tells AWS that we do actually own this domain
+resource "cloudflare_dns_record" "contact_verification" {
+  zone_id = data.cloudflare_zone.main.zone_id
+  name    = "_amazonses.inbound"
+  type    = "TXT"
+  content = "\"${aws_ses_domain_identity.contact_domain.verification_token}\""
+  ttl     = 3600 # 1 Hour
+}
+
+# Blocks until verification is completed
+resource "aws_ses_domain_identity_verification" "contact_identity_verification" {
+  domain     = aws_ses_domain_identity.contact_domain.id
+  depends_on = [cloudflare_dns_record.contact_verification, aws_ses_domain_identity.contact_domain]
+}
+
+# Mail from to configure sender domain instead of amazon default
+resource "aws_ses_domain_mail_from" "contact_mail_from" {
+  domain           = aws_ses_domain_identity.contact_domain.domain
+  mail_from_domain = "inbound.sbox-soft.com"
+}
+
+# DKIM generation resource
+resource "aws_ses_domain_dkim" "contact_dkim" {
+  domain = aws_ses_domain_identity.contact_domain.domain
+}
+
+# CNAME records used for dkim, redirects over to AWS which handles cryptographic crap that I don't understand
+resource "cloudflare_dns_record" "contact_dkim" {
+  count   = 3
+  zone_id = data.cloudflare_zone.main.zone_id
+  ttl     = 3600 # 1 hour
+  type    = "CNAME"
+  # For each dkim
+  name    = "${aws_ses_domain_dkim.contact_dkim.dkim_tokens[count.index]}._domainkey"
+  content = "${aws_ses_domain_dkim.contact_dkim.dkim_tokens[count.index]}.dkim.amazonses.com"
+
+  depends_on = [aws_ses_domain_identity.contact_domain]
+}
+
+# Cloudflare record for inbound receving emails
+resource "cloudflare_dns_record" "inbound_mx" {
+  zone_id  = data.cloudflare_zone.main.zone_id
+  ttl      = 3600 # 1 hour
+  type     = "MX"
+  name     = "inbound"
+  content  = "inbound-smtp.us-east-1.amazonses.com"
+  priority = 1
+}
+
+# SPF TXT record, authorizes that amazonses.com is allowed to send emails from this domain
+resource "cloudflare_dns_record" "contact_spf" {
+  zone_id = data.cloudflare_zone.main.zone_id
+  ttl     = 3600 # 1 hour
+  type    = "TXT"
+  name    = "inbound"
+  content = "\"v=spf1 include:amazonses.com ~all\""
+}
+
 # S3 bucket for storing received contact emails
 resource "aws_s3_bucket" "contact_emails" {
   bucket = "sbox-soft-contact-emails"
@@ -183,14 +246,4 @@ resource "aws_ses_receipt_rule" "contact_notify" {
     topic_arn = aws_sns_topic.contact_notification.arn
     position  = 2
   }
-}
-
-# Cloudflare record for inbound receving emails
-resource "cloudflare_dns_record" "inbound_mx" {
-  zone_id  = data.cloudflare_zone.main.zone_id
-  ttl      = 3600 # 1 hour
-  type     = "MX"
-  name     = "inbound"
-  content  = "inbound-smtp.us-east-1.amazonses.com"
-  priority = 1
 }
