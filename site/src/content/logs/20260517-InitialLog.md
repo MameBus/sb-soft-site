@@ -4,6 +4,7 @@ description: An introductory log describing a bit about the basic concept, what 
 written: 2026-05-17
 updated: 2026-05-17
 author: Joel Tonkins
+snippit: For a bit over a year now I've been tinkering away at a game that I came up for the idea of a while ago. I've mostly just done a little bit here and there when I get motivated or I want to try something in particular. But now I've decided to try to get a bit more serious, or at least regular in working on it so I figured I'd put this dev log together to share what I'm doing, what I've learnt, and where I'm going with any friends or strangers that care to follow along.
 ---
 
 # Background

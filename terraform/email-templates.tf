@@ -25,3 +25,10 @@ resource "aws_ses_template" "unsub_confirm" {
   html    = file("${path.module}/../email-templates/unsub-confirmation/unsub-confirmation.html")
   text    = file("${path.module}/../email-templates/unsub-confirmation/unsub-confirmation.txt")
 }
+
+resource "aws_ses_template" "new_devlog" {
+  name    = "NewDevlog"
+  subject = "A New SBox-Soft Devlog Just Dropped"
+  html    = file("${path.module}/../email-templates/new-devlog/new-devlog.html")
+  text    = file("${path.module}/../email-templates/new-devlog/new-devlog.txt")
+}

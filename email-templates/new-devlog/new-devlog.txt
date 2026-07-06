@@ -1,0 +1,10 @@
+A Sbox-Soft Devlog Was Just Published
+
+See it on the site here: https://www.sbox-soft.com/logs/{{logid}}"
+
+Preview
+
+{{preview}}
+
+
+You're receiving this Email because you're signed up for the SBox Soft newsletter. Sick of notifications? Unsubscribe here anytime: https://www.sbox-soft.com/unsubscribe/verify?email={{email}}&token={{token}}
