@@ -71,6 +71,14 @@ jobs:
       pull-requests: write
 
     steps:
+      - name: Checkout Code
+        uses: actions/checkout@v6
+      
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24.x
+
       - name: Setup script dependencies
         run: npm install
         working-directory: ./actions-scripts/detect-changes
