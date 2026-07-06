@@ -100,52 +100,6 @@ resource "aws_s3_bucket_policy" "contact_ses" {
   })
 }
 
-# Some encryption stuff to make sure Emails are securely stored
-resource "aws_kms_key" "contact_key" {
-  description             = "Key for SES email encryption"
-  deletion_window_in_days = 10
-
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Sid    = "Enable IAM User Permissions"
-        Effect = "Allow"
-        Principal = {
-          AWS = "arn:aws:iam::786401692952:root"
-        }
-        Action   = "kms:*"
-        Resource = "*"
-      },
-      {
-        Sid    = "AllowSESToUseKeyViaIAMRole"
-        Effect = "Allow"
-        Principal = {
-          AWS = aws_iam_role.ses_receipt_role.arn
-        }
-        Action = [
-          "kms:GenerateDataKey",
-          "kms:Encrypt",
-          "kms:Decrypt",
-          "kms:DescribeKey"
-        ]
-        Resource = "*"
-      }
-    ]
-  })
-}
-
-resource "aws_s3_bucket_server_side_encryption_configuration" "contact_encryption" {
-  bucket = aws_s3_bucket.contact_emails.id
-
-  rule {
-    apply_server_side_encryption_by_default {
-      kms_master_key_id = aws_kms_key.contact_key.arn
-      sse_algorithm     = "aws:kms"
-    }
-  }
-}
-
 # Make it private, no public access into it
 resource "aws_s3_bucket_public_access_block" "contact_emails" {
   bucket = aws_s3_bucket.contact_emails.id
@@ -234,15 +188,6 @@ resource "aws_iam_role_policy" "ses_s3_policy" {
           "s3:PutObject"
         ]
         Resource = "${aws_s3_bucket.contact_emails.arn}/*"
-      },
-      {
-        Effect = "Allow"
-        Action = [
-          "kms:GenerateDataKey",
-          "kms:Encrypt",
-          "kms:DescribeKey"
-        ]
-        Resource = aws_kms_key.contact_key.arn
       }
     ]
   })
