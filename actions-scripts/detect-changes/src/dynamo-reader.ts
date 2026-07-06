@@ -21,7 +21,7 @@ export async function isFileInDb(fileName: string) {
     });
     console.log(`Getting from db with command ${JSON.stringify(getCommand)}`);
     const getResponse = await docClient.send(getCommand);
-    if (getResponse == null) {
+    if (getResponse.Item == undefined) {
         return false; // Is not in db
     }
     else {
