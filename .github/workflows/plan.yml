@@ -68,6 +68,7 @@ jobs:
         uses: mshick/add-pr-comment@v3
         with:
           message-path: ./terraform/tfplan.txt
+          message-id: terraform-plan
 
   publish_plan:
     name: Publish Plan
@@ -98,4 +99,5 @@ jobs:
       - name: Comment Plan on PR
         uses: mshick/add-pr-comment@v3
         with:
-          message-path: publish-plan.json 
+          message-path: publish-plan.json
+          message-id: publish-plan
