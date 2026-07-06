@@ -14,7 +14,7 @@ env:
   CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
 
 jobs:
-  plan:
+  terraform_plan:
     name: Terraform Plan
     runs-on: ubuntu-latest
 
@@ -63,3 +63,22 @@ jobs:
       - name: Fail on Failed Plan
         if: steps.plan.outcome == 'failure'
         run: exit 1
+
+  publish_plan:
+    name: Publish Plan
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+
+    steps:
+      - name: Setup script dependencies
+        run: npm install
+        working-directory: ./actions-scripts/detect-changes
+
+      - name: Identify Logs To Be Published
+        run: npx tsx actions-scripts/detect-changes/src/index.ts ./site/src/content/logs publish-plan.json
+
+      - name: Comment Plan on PR
+        uses: mshick/add-pr-comment@v3
+        with:
+          message-path: publish-plan.json 
