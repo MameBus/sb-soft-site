@@ -67,7 +67,7 @@ jobs:
       - name: Comment Plan on PR
         uses: mshick/add-pr-comment@v3
         with:
-          message-path: tfplan 
+          message-path: ./terraform/tfplan 
 
   publish_plan:
     name: Publish Plan
