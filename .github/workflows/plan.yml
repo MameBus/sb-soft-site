@@ -64,6 +64,11 @@ jobs:
         if: steps.plan.outcome == 'failure'
         run: exit 1
 
+      - name: Comment Plan on PR
+        uses: mshick/add-pr-comment@v3
+        with:
+          message-path: tfplan 
+
   publish_plan:
     name: Publish Plan
     runs-on: ubuntu-latest
