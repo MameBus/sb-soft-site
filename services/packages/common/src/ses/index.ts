@@ -10,7 +10,7 @@ export async function sendTemplateEmail(recipientEmail : string, template: Email
         Destination: {
             ToAddresses: [recipientEmail]
         },
-        TemplateData: template.templateData,
+        TemplateData: JSON.stringify(template.templateData),
         Source: fromAddress,
         Template: template.templateName
     });
