@@ -26,7 +26,7 @@ export async function getPublishedDb(pageName: string) {
     try {
         return await dbClient.getRecord(buildKey(pageName), true);        
     } catch (error) {
-        if (error == DoesNotExistError) {
+        if (error instanceof DoesNotExistError) {
             return null;
         }
         throw error;

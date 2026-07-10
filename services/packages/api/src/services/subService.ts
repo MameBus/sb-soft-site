@@ -34,7 +34,7 @@ export async function sub(emailAddress : string) : Promise<SubResponse> {
         token = createResponse.rawToken;
     } catch (error) {
         hadError = true;
-        if (error == AlreadyExistsError) {
+        if (error instanceof AlreadyExistsError) {
             console.log('Subscriber record already exists');
             subscriber = await getSubscriber(emailAddress);
             // Is already verified so we don't actually do anything

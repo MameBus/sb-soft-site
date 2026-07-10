@@ -49,7 +49,7 @@ export async function getSubscriberDb(emailAddress : string) {
         const item = dbClient.getRecord(key, true);
         return item as unknown as Subscriber;     
     } catch (error) {
-        if (error == DoesNotExistError) {
+        if (error instanceof DoesNotExistError) {
             return null;
         }
         throw error;
