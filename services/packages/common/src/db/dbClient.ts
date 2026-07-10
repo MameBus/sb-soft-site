@@ -25,7 +25,7 @@ export class DbClient {
 
         const getResponse = await docClient.send(getCommand);
         if (getResponse.Item == undefined) {
-            throw DoesNotExistError;
+            throw new DoesNotExistError();
         }
         
         return getResponse.Item;

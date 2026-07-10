@@ -1,7 +1,7 @@
 // https://stackoverflow.com/questions/31626231/custom-error-class-in-typescript
 
 export class AlreadyExistsError extends Error {
-    constructor(msg: string) {
+    constructor(msg?: string) {
         super(msg);
 
         // Set the prototype explicitly.
@@ -10,7 +10,7 @@ export class AlreadyExistsError extends Error {
 }
 
 export class DoesNotExistError extends Error {
-    constructor(msg: string) {
+    constructor(msg?: string) {
         super(msg);
 
         // Set the prototype explicitly.
