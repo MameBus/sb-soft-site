@@ -25,13 +25,9 @@ jobs:
         with:
           node-version: 22.x
 
-      - name: Install Lambda Dependencies
-        run: npm install
-        working-directory: ./lambda
-
-      - name: Build Lambda
+      - name: Build Services
         run: npm run build
-        working-directory: ./lambda
+        working-directory: ./services
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v6

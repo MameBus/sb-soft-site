@@ -1,0 +1,1 @@
+export const fromAddress = "noreply@sbox-soft.com";

@@ -1,0 +1,39 @@
+{
+  "name": "@sb-soft/common",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./ses": {
+      "types": "./dist/ses/index.d.ts",
+      "import": "./dist/ses/index.js"
+    },
+    "./db": {
+      "types": "./dist/db/index.d.ts",
+      "import": "./dist/db/index.js"
+    },
+    "./db/published": {
+      "types": "./dist/db/published/index.d.ts",
+      "import": "./dist/db/published/index.js"
+    },
+    "./db/subscribers": {
+      "types": "./dist/db/subscribers/index.d.ts",
+      "import": "./dist/db/subscribers/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc"
+  },
+  "devDependencies": {
+    "@types/node": "^26.1.0",
+    "typescript": "^6.0.3"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.1081.0",
+    "@aws-sdk/client-ses": "^3.1081.0",
+    "@aws-sdk/lib-dynamodb": "^3.1081.0"
+  }
+}
