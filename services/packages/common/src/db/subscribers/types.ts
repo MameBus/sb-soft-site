@@ -11,4 +11,4 @@ export enum VerifiedStatus {
     AWAITING = "awaiting"
 };
 
-export const defaultVerifiedStatus = VerifiedStatus.VERIFIED;
+export const defaultVerifiedStatus = VerifiedStatus.AWAITING;
