@@ -17,7 +17,7 @@ export async function createNewSubscriber(email : string) {
 
     // If it does exist, then we can't add it in
     if (subscriber != null) {
-        throw AlreadyExistsError;
+        throw new AlreadyExistsError();
     }
 
     // Does not exist, so we can make it
@@ -45,7 +45,7 @@ export async function deleteSubscriber(email : string) {
     const subscriber = await getSubscriberDb(email);
 
     if (subscriber == null) {
-        throw DoesNotExistError;
+        throw new DoesNotExistError();
     }
 
     await deleteSubscriberDb(email);
@@ -57,7 +57,7 @@ export async function rerollToken(email : string) : Promise<string> {
 
     // Don't do anything if it doesn't actually exist
     if (subscriber == null) {
-        throw DoesNotExistError;
+        throw new DoesNotExistError();
     }
 
     const token = newToken();
@@ -80,7 +80,7 @@ export async function updateStatus(email: string, newStatus: VerifiedStatus) {
     const subscriber = await getSubscriberDb(email);
 
     if (subscriber == null) {
-        throw DoesNotExistError;
+        throw new DoesNotExistError();
     }
 
     // Now update the status
@@ -96,7 +96,7 @@ export async function verifyAuth(email: string, token: string) {
     const subscriber = await getSubscriberDb(email);
 
     if (subscriber == null) {
-        throw DoesNotExistError;
+        throw new DoesNotExistError();
     }
 
     return validateToken(token, subscriber.validationToken, subscriber.tokenExpire);

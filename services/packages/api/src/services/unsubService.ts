@@ -24,7 +24,7 @@ export async function unsub(emailAddress : string) : Promise<UnsubResponse> {
             };
         }
     } catch (error) {
-        if (error == DoesNotExistError) {
+        if (error instanceof DoesNotExistError) {
             return {
                 actionOutcome: UnsubOutcome.Failed
             };
@@ -51,7 +51,7 @@ export async function confirmUnsub(emailAddress : string, token : string) : Prom
     try {
         await getSubscriber(emailAddress);
     } catch (error) {
-        if (error == DoesNotExistError) {
+        if (error instanceof DoesNotExistError) {
             return true; // We kind of deleted it ig
         }
         throw error;
