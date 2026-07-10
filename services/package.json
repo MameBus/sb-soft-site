@@ -1,0 +1,11 @@
+{
+  "name": "sb-soft-services",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build:common": "npm install --workspace=@sb-soft/common && npm run build --workspace=@sb-soft/common",
+    "build": "npm run build:common && npm install && npm install --workspaces && npm run build --workspaces"
+  }
+}

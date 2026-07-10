@@ -14,7 +14,7 @@ env:
   CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
 
 jobs:
-  plan:
+  terraform_plan:
     name: Terraform Plan
     runs-on: ubuntu-latest
 
@@ -27,13 +27,9 @@ jobs:
         with:
           node-version: 22.x
 
-      - name: Install Lambda Dependencies
-        run: npm install
-        working-directory: ./lambda
-
-      - name: Build Lambda
+      - name: Build Services
         run: npm run build
-        working-directory: ./lambda
+        working-directory: ./services
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v6
@@ -56,10 +52,48 @@ jobs:
       
       - name: Terraform Plan
         id: plan
-        run: terraform plan -no-color -out=tfplan
+        run: terraform plan -no-color > tfplan.txt
         working-directory: ./terraform
         continue-on-error: true
 
       - name: Fail on Failed Plan
         if: steps.plan.outcome == 'failure'
         run: exit 1
+
+      - name: Comment Plan on PR
+        uses: mshick/add-pr-comment@v3
+        with:
+          message-path: ./terraform/tfplan.txt
+          message-id: terraform-plan
+
+  publish_plan:
+    name: Publish Plan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v6
+      
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24.x
+
+      - name: Build Services
+        run: npm run build
+        working-directory: ./services
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v6
+        with:
+          role-to-assume: arn:aws:iam::786401692952:role/GitHubActionsPagePublishing
+          aws-region: us-east-1
+
+      - name: Identify Logs To Be Published
+        run: node services/packages/detect-changes/ ./site/src/content/logs publish-plan.json
+
+      - name: Comment Plan on PR
+        uses: mshick/add-pr-comment@v3
+        with:
+          message-path: publish-plan.json
+          message-id: publish-plan

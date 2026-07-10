@@ -68,26 +68,26 @@ resource "aws_iam_role_policy" "newsletter_policy" {
 # Package the Lambda function code
 data "archive_file" "sub_zip" {
   type        = "zip"
-  source_dir  = "${path.module}/../lambda/dist/sub"
-  output_path = "${path.module}/../lambda/sub.zip"
+  source_dir  = "${path.module}/../services/packages/api/dist/sub"
+  output_path = "${path.module}/../services/packages/api/sub.zip"
 }
 
 data "archive_file" "sub_confirm_zip" {
   type        = "zip"
-  source_dir  = "${path.module}/../lambda/dist/sub-confirm"
-  output_path = "${path.module}/../lambda/sub-confirm.zip"
+  source_dir  = "${path.module}/../services/packages/api/dist/sub-confirm"
+  output_path = "${path.module}/../services/packages/api/sub-confirm.zip"
 }
 
 data "archive_file" "unsub_zip" {
   type        = "zip"
-  source_dir  = "${path.module}/../lambda/dist/unsub"
-  output_path = "${path.module}/../lambda/unsub.zip"
+  source_dir  = "${path.module}/../services/packages/api/dist/unsub"
+  output_path = "${path.module}/../services/packages/api/unsub.zip"
 }
 
 data "archive_file" "unsub_confirm_zip" {
   type        = "zip"
-  source_dir  = "${path.module}/../lambda/dist/unsub-confirm"
-  output_path = "${path.module}/../lambda/unsub-confirm.zip"
+  source_dir  = "${path.module}/../services/packages/api/dist/unsub-confirm"
+  output_path = "${path.module}/../services/packages/api/unsub-confirm.zip"
 }
 
 # Lambda functions
