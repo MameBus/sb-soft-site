@@ -46,7 +46,7 @@ export async function getSubscriberDb(emailAddress : string) {
     const key = buildKey(emailAddress);
 
     try {
-        const item = dbClient.getRecord(key, true);
+        const item = await dbClient.getRecord(key, true);
         return item as unknown as Subscriber;     
     } catch (error) {
         if (error instanceof DoesNotExistError) {
