@@ -1,3 +1,4 @@
+import { DoesNotExistError } from "../../util/errors.js";
 import { DbClient } from "../dbClient.js";
 import { Subscriber } from "./types.js";
 
@@ -44,9 +45,15 @@ export async function deleteSubscriberDb(emailAddress : string) {
 export async function getSubscriberDb(emailAddress : string) {
     const key = buildKey(emailAddress);
 
-    const item = dbClient.getRecord(key, true);
-
-    return item as unknown as Subscriber; 
+    try {
+        const item = dbClient.getRecord(key, true);
+        return item as unknown as Subscriber;     
+    } catch (error) {
+        if (error = DoesNotExistError) {
+            return null;
+        }
+        throw error;
+    }
 }
 
 // Grab a chunk of verified subscribers
