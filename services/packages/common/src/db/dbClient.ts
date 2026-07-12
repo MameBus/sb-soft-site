@@ -60,7 +60,7 @@ export class DbClient {
         await docClient.send(updateCommand);
     }
 
-    async scanBatch(limit: number, filterExpression: string, expressionAttributeValues: Record<string, AttributeValue>, startKey: any) {
+    async scanBatch(limit: number, filterExpression: string, expressionAttributeValues: Record<string, any>, startKey: Record<string, any> | undefined) {
         // Query the next 50 Emails
         const scanCommand = new ScanCommand({
             TableName: this.tableName,
