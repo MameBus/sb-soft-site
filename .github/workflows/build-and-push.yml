@@ -146,6 +146,7 @@ jobs:
 
       - name: Start Notifications Task
         run: |
+          NOTIFICATIONS=$(jq -c . publish-plan.json)
           aws ecs run-task \
             --cluster sb-soft \
             --task-definition publish-notifications \
@@ -156,5 +157,5 @@ jobs:
           securityGroups=[sg-xxxx],
           assignPublicIp=ENABLED
           }" \
-          --overrides '{"name": "publish-notifications","environment": [{"name": "NOTIFICATIONS","value": $(cat publish-plan.json)}]}'
+          --overrides "{\"containerOverrides\":[{\"name\":\"publish-notifications\",\"environment\":[{\"name\":\"NOTIFICATIONS\",\"value\":\"$NOTIFICATIONS\"}]}]}"
         
