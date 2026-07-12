@@ -60,7 +60,7 @@ export async function getSubscriberDb(emailAddress : string) {
 export async function getVerifiedSubscribersDb(limit: number, startEmail: string | undefined) : Promise<Subscriber[]> {
     const filterExpression = "verifiedStatus = :verifiedStatus";
     const expressionAttributeValues = {
-        ":status": {
+        ":verifiedStatus": {
             S: "verified"
         }
     };
