@@ -162,7 +162,7 @@ jobs:
               ]
             }' > overrides.json
           aws ecs run-task \
-            --cluster sb-soft \
+            --cluster sb-soft-publishing \
             --task-definition publish-notifications \
             --launch-type FARGATE \
             --network-configuration \
