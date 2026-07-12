@@ -23,6 +23,8 @@ async function sendNotifications(notifications: Notification[]) {
     do {
         // Query the next batch of users
         const nextSubscribers = await getVerifiedSubscribers(usersPerBatch, nextKey);
+
+        console.log(`Next subscribers batch is ${JSON.stringify(nextSubscribers)}`);
         
         for (const subscriber of nextSubscribers) {
             await sendAllNotificationsForUser(subscriber, notifications);
