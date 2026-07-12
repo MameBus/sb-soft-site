@@ -1,5 +1,5 @@
 variable "ecr_uri" {
-  type      = string
+  type = string
 }
 
 resource "aws_ecs_cluster" "main" {
@@ -23,9 +23,7 @@ resource "aws_iam_role" "ecs_execution" {
 
 resource "aws_iam_role_policy_attachment" "ecs_execution" {
   role = aws_iam_role.ecs_execution.name
-
-  policy_arn =
-    "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
 resource "aws_iam_role" "publish_notifications_task" {
@@ -95,9 +93,9 @@ resource "aws_ecs_task_definition" "publish_notifications" {
 
   container_definitions = jsonencode([
     {
-      name  = "publish-notifications"
+      name = "publish-notifications"
 
-      image =  "${var.ecr_uri}:latest"
+      image = "${var.ecr_uri}:latest"
 
       essential = true
 
