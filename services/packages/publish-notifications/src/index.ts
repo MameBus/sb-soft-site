@@ -31,7 +31,7 @@ async function sendNotifications(notifications: Notification[]) {
         }
 
         // Take not of the next start key for the next run if there was even any returned this go
-        nextKey = nextSubscribers.length == 0 ? undefined : nextSubscribers[-1].emailAddress;
+        nextKey = nextSubscribers.length == 0 ? undefined : nextSubscribers[nextSubscribers.length - 1].emailAddress;
     } while (nextKey);
 }
 
