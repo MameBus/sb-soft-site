@@ -37,7 +37,7 @@ export function readFiles(directory: string) : DevLogFile[] {
 
         console.log("Valid contents, adding");
         result.push({
-            fileName: file.split('.')[0],
+            fileName: file.split('.')[0].toLowerCase(),
             snippit: snippit
         });       
     });
