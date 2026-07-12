@@ -50,6 +50,8 @@ resource "aws_iam_role_policy" "publish_permissions" {
       {
         Effect = "Allow"
         Action = [
+          "dynamodb:GetItem",
+          "dynamodb:UpdateItem",
           "dynamodb:Scan"
         ]
         Resource = aws_dynamodb_table.subscribers_table.arn
