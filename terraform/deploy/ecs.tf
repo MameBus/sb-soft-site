@@ -67,7 +67,7 @@ resource "aws_iam_role_policy" "publish_permissions" {
       {
         Effect = "Allow"
         Action = [
-          "ses:SendEmail"
+          "ses:SendTemplatedEmail"
         ]
         Resource = "*"
       }
