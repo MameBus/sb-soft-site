@@ -6,7 +6,7 @@ export async function addPage(pageName: string) {
     // Try to get first to make sure it doesn't already exist
     const published = await getPublishedDb(pageName);
 
-    if (published == null) {
+    if (published != null) {
         throw new AlreadyExistsError();
     }
 
