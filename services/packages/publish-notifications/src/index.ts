@@ -1,8 +1,7 @@
-import { getVerifiedSubscribers, rerollToken } from "@sb-soft/common/db/subscribers";
-import { sesApiLimit, usersPerBatch } from "./config";
+import { getVerifiedSubscribers, rerollToken, Subscriber } from "@sb-soft/common/db/subscribers";
+import { sesApiLimit, usersPerBatch } from "./config.js";
 import { newDevlogTemplate, sendTemplateEmail } from "@sb-soft/common/ses";
-import { sleep } from "./util";
-import { Subscriber } from "../../common/dist/db/subscribers/types";
+import { sleep } from "./util.js";
 import { addPage } from "@sb-soft/common/db/published";
 
 // Declare some types
