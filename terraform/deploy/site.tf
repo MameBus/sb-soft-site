@@ -87,7 +87,7 @@ resource "aws_cloudfront_function" "url_mapping" {
   name    = "RewriteDefaultIndexRequest"
   runtime = "cloudfront-js-2.0"
   publish = true
-  code    = file("${path.module}/../services/packages/cloudfront-functions/index.js")
+  code    = file("${path.module}/../../services/packages/cloudfront-functions/index.js")
 }
 
 # The actual cloudfront distribution

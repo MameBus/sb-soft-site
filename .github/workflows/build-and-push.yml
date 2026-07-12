@@ -11,9 +11,38 @@ permissions:
 
 env:
   CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+  ECR_URI: ${{ vars.ECR_URI }}
+  TF_VAR_ecr_uri: ${{ vars.ECR_URI }}
 
 jobs:
+  docker-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v6
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v6
+        with:
+          role-to-assume: arn:aws:iam::786401692952:role/GitHubActionsTerraform
+          aws-region: us-east-1
+
+      - name: Setup docker credentials
+        run: aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 786401692952.dkr.ecr.us-east-1.amazonaws.com
+
+      - name: Build docker image
+        run: docker build -t sb-soft/publish-notifications -f packages/publish-notifications/dockerfile .
+        working-directory: ./services
+
+      - name: Tag image
+        run: docker tag sb-soft/publish-notifications $ECR_URI:latest
+
+      - name: Push to ECR
+        run: docker push $ECR_URI:latest
+
   terraform-apply:
+    needs: docker-deploy
     runs-on: ubuntu-latest
 
     steps:
@@ -42,12 +71,12 @@ jobs:
       
       - name: Init Terraform
         run: terraform init -no-color
-        working-directory: ./terraform
+        working-directory: ./terraform/deploy
 
       - name: Terraform Plan
         id: plan
         run: terraform plan -no-color -out=tfplan
-        working-directory: ./terraform
+        working-directory: ./terraform/deploy
         continue-on-error: true
 
       - name: Fail on Failed Plan
@@ -56,7 +85,7 @@ jobs:
 
       - name: Terraform Apply
         run: terraform apply -auto-approve
-        working-directory: ./terraform
+        working-directory: ./terraform/deploy
 
   build-and-push:
     needs: terraform-apply
@@ -88,3 +117,43 @@ jobs:
       - name: Upload site content to s3
         run: aws s3 sync ./dist s3://sbox-soft-site-s3 --delete
         working-directory: ./site
+
+  # publish-email:
+  #   needs: build-and-push
+  #   runs-on: ubuntu-latest
+
+  #   steps:
+  #     - name: Checkout Code
+  #       uses: actions/checkout@v6
+
+  #     - name: Setup Node
+  #       uses: actions/setup-node@v6
+  #       with:
+  #         node-version: 24.x
+
+  #     - name: Build Services
+  #       run: npm run build
+  #       working-directory: ./services
+
+  #     - name: Configure AWS Credentials
+  #       uses: aws-actions/configure-aws-credentials@v6
+  #       with:
+  #         role-to-assume: arn:aws:iam::786401692952:role/GitHubActionsTerraform
+  #         aws-region: us-east-1
+      
+  #     - name: Identify Logs To Be Published
+  #       run: node services/packages/detect-changes/ ./site/src/content/logs publish-plan.json
+
+  #     - name: Start Notifications Task
+  #       run: |
+  #         aws ecs run-task \
+  #           --cluster sb-soft \
+  #           --task-definition publish-notifications \
+  #           --launch-type FARGATE \
+  #           --network-configuration \
+  #         "awsvpcConfiguration={
+  #         subnets=[subnet-xxxx],
+  #         securityGroups=[sg-xxxx],
+  #         assignPublicIp=ENABLED
+  #         }"
+        

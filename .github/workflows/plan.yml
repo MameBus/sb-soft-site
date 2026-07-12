@@ -12,6 +12,7 @@ permissions:
 
 env:
   CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+  TF_VAR_ecr_uri: ${{ vars.ECR_URI }}
 
 jobs:
   terraform_plan:
@@ -44,16 +45,16 @@ jobs:
       
       - name: Init Terraform
         run: terraform init -no-color
-        working-directory: ./terraform
+        working-directory: ./terraform/deploy
 
       - name: Validate Terraform
         run: terraform validate -no-color
-        working-directory: ./terraform
+        working-directory: ./terraform/deploy
       
       - name: Terraform Plan
         id: plan
         run: terraform plan -no-color > tfplan.txt
-        working-directory: ./terraform
+        working-directory: ./terraform/deploy
         continue-on-error: true
 
       - name: Fail on Failed Plan
@@ -63,7 +64,7 @@ jobs:
       - name: Comment Plan on PR
         uses: mshick/add-pr-comment@v3
         with:
-          message-path: ./terraform/tfplan.txt
+          message-path: ./terraform/deploy/tfplan.txt
           message-id: terraform-plan
 
   publish_plan:
