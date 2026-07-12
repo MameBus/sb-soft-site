@@ -167,8 +167,8 @@ jobs:
             --launch-type FARGATE \
             --network-configuration \
           "awsvpcConfiguration={
-          subnets=[subnet-xxxx],
-          securityGroups=[sg-xxxx],
+          subnets=[subnet-0a598bcb131f27867],
+          securityGroups=[sg-09bd370d49c05ea26],
           assignPublicIp=ENABLED
           }" \
           --overrides file://overrides.json
