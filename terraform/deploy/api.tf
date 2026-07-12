@@ -31,8 +31,7 @@ data "aws_iam_policy_document" "lambda_permissions" {
     sid    = "email"
     effect = "Allow"
     actions = [
-      "ses:SendTemplatedEmail",
-      "ses:SendBulkTemplatedEmail"
+      "ses:SendTemplatedEmail"
     ]
     resources = ["*"]
 
