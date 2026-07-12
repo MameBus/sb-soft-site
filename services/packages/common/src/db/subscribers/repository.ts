@@ -60,14 +60,10 @@ export async function getSubscriberDb(emailAddress : string) {
 export async function getVerifiedSubscribersDb(limit: number, startEmail: string | undefined) : Promise<Subscriber[]> {
     const filterExpression = "verifiedStatus = :verifiedStatus";
     const expressionAttributeValues = {
-        ":verifiedStatus": {
-            S: "verified"
-        }
+        ":verifiedStatus": "verified"
     };
     const startKey = startEmail ? {
-        "emailAddress": {
-            S: startEmail
-        }
+        "emailAddress": startEmail
     } : undefined;
 
     const items = await dbClient.scanBatch(limit, filterExpression, expressionAttributeValues, startKey);

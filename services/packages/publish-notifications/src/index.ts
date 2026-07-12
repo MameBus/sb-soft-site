@@ -41,6 +41,7 @@ async function sendAllNotificationsForUser(subscriber: Subscriber, notifications
 
     // For each user we're going to send out each email one by one
     for (const notification of notifications) {
+        console.log(`Sending ${notification.fileName} for user ${subscriber}`)
         const template = newDevlogTemplate({
             email: subscriber.emailAddress,
             token: newToken,
