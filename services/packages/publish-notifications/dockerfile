@@ -2,9 +2,11 @@ FROM node:24-alpine
 
 WORKDIR /app
 
-COPY . .
+COPY package.json package-lock.json ./
 
-RUN npm install
+COPY packages/common ./packages/common
+COPY packages/publish-notifications ./packages/publish-notifications
+
 RUN npm run build
 
-CMD ["npm", "run", "app"]
+CMD ["node", "./packages/publish-notifications"]
