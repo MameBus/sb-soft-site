@@ -155,6 +155,6 @@ jobs:
           subnets=[subnet-xxxx],
           securityGroups=[sg-xxxx],
           assignPublicIp=ENABLED
-          } \
+          }" \
           --overrides '{"name": "publish-notifications","environment": [{"name": "NOTIFICATIONS","value": $(cat publish-plan.json)}]}'
         
