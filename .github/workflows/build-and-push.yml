@@ -118,42 +118,43 @@ jobs:
         run: aws s3 sync ./dist s3://sbox-soft-site-s3 --delete
         working-directory: ./site
 
-  # publish-email:
-  #   needs: build-and-push
-  #   runs-on: ubuntu-latest
+  publish-email:
+    needs: build-and-push
+    runs-on: ubuntu-latest
 
-  #   steps:
-  #     - name: Checkout Code
-  #       uses: actions/checkout@v6
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v6
 
-  #     - name: Setup Node
-  #       uses: actions/setup-node@v6
-  #       with:
-  #         node-version: 24.x
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24.x
 
-  #     - name: Build Services
-  #       run: npm run build
-  #       working-directory: ./services
+      - name: Build Services
+        run: npm run build
+        working-directory: ./services
 
-  #     - name: Configure AWS Credentials
-  #       uses: aws-actions/configure-aws-credentials@v6
-  #       with:
-  #         role-to-assume: arn:aws:iam::786401692952:role/GitHubActionsTerraform
-  #         aws-region: us-east-1
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v6
+        with:
+          role-to-assume: arn:aws:iam::786401692952:role/GitHubActionsTerraform
+          aws-region: us-east-1
       
-  #     - name: Identify Logs To Be Published
-  #       run: node services/packages/detect-changes/ ./site/src/content/logs publish-plan.json
+      - name: Identify Logs To Be Published
+        run: node services/packages/detect-changes/ ./site/src/content/logs publish-plan.json
 
-  #     - name: Start Notifications Task
-  #       run: |
-  #         aws ecs run-task \
-  #           --cluster sb-soft \
-  #           --task-definition publish-notifications \
-  #           --launch-type FARGATE \
-  #           --network-configuration \
-  #         "awsvpcConfiguration={
-  #         subnets=[subnet-xxxx],
-  #         securityGroups=[sg-xxxx],
-  #         assignPublicIp=ENABLED
-  #         }"
+      - name: Start Notifications Task
+        run: |
+          aws ecs run-task \
+            --cluster sb-soft \
+            --task-definition publish-notifications \
+            --launch-type FARGATE \
+            --network-configuration \
+          "awsvpcConfiguration={
+          subnets=[subnet-xxxx],
+          securityGroups=[sg-xxxx],
+          assignPublicIp=ENABLED
+          } \
+          --overrides '{"name": "publish-notifications","environment": [{"name": "NOTIFICATIONS","value": $(cat publish-plan.json)}]}'
         
