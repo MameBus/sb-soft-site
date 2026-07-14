@@ -16,20 +16,22 @@ import { Picture } from 'astro:assets';
     </head>
     <body>
         <header>
-            <nav class="mx-auto flex items-center justify-between px-5 py-2 bg-custom-blue">
-                <div>
+            <nav class="md:flex items-center justify-between px-5 py-2 bg-custom-blue">
+                <div class="w-fit mx-auto md:mx-0">
                     <h1 class="sr-only">SBox Software</h1>
-                    <a href="/"><Picture src={fullLogo} alt="SBox Software Logo" formats={['avif', 'webp']} class="h-12 w-auto" height="500"/></a>
+                    <a href="/">
+                        <Picture class="w-full mx-auto" src={fullLogo} alt="SBox Software Logo" formats={['avif', 'webp']} class="h-12 w-auto" height="500"/>
+                    </a>
                 </div>
-                <div class="flex items-center space-x-10 text-white text-lg font-medium underline">
-                    <a href="/projects">Projects</a>
-                    <a href="/logs">Dev Logs</a>
-                    <a href="/subscribe">Notifications</a>
-                    <a href="/about">About</a>
+                <div class="sm:flex block sm:w-fit w-full md:ml-auto md:mx-0 sm:mx-auto sm:items-center sm:space-x-10 text-white text-lg font-medium underline">
+                    <a class="sm:flex block sm:w-fit w-full text-center" href="/projects">Projects</a>
+                    <a class="sm:flex block sm:w-fit w-full text-center" href="/logs">Dev Logs</a>
+                    <a class="sm:flex block sm:w-fit w-full text-center" href="/subscribe">Notifications</a>
+                    <a class="sm:flex block sm:w-fit w-full text-center" href="/about">About</a>
                 </div>
             </nav>
         </header>
-        <div class="mx-75 my-10">
+        <div class="lg:mx-75 md:mx-50 sm:mx-10 mx-5 my-10">
             <slot />
         </div>
         <script is:inline src="https://cdn.jsdelivr.net/npm/flowbite@4.0.1/dist/flowbite.min.js"></script>

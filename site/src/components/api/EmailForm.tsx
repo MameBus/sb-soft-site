@@ -32,7 +32,7 @@ function EmailForm({
 
     return (
         <div>
-            <form className="bg-gray-100 rounded-base p-5 w-100 mx-auto my-10" id="subscribe-form" onSubmit={(event) => {console.log("submit hit"); event.preventDefault(); formSubmit(); }}>
+            <form className="bg-gray-100 rounded-base p-5 sm:w-100 w-full mx-auto my-10" id="subscribe-form" onSubmit={(event) => {console.log("submit hit"); event.preventDefault(); formSubmit(); }}>
                 <label htmlFor="email">Email:</label><br />
                 <input disabled={waiting} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight bg-white focus:outline-none focus:shadow-outline" id="email" name="email" type="email" onChange={(event) => setEmail(event.target.value)} />
                 
