@@ -82,7 +82,7 @@ function RequestAndWait({
                 <Spinner />
             </div>
             <div hidden={!showMessage}>
-                <div className={isFriendlyMessage ? "text-blue-500" : "text-red-500"}>{message}</div>
+                <div className={`text-center ${isFriendlyMessage ? "text-blue-500" : "text-red-500"}`}>{message}</div>
             </div>
         </div>
     )
